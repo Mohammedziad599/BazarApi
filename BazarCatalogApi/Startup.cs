@@ -16,6 +16,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
+using Newtonsoft.Json.Serialization;
+
 namespace BazarCatalogApi
 {
     public class Startup
@@ -34,7 +36,10 @@ namespace BazarCatalogApi
             {
                 options.UseSqlite(Configuration.GetConnectionString("ConnectionString"));
             });
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(s =>
+            {
+                s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "BazarCatalogApi", Version = "v1"});
