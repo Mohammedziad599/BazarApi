@@ -12,8 +12,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BazarCatalogApi.Controllers
 {
-    [Route("/")]
-    public class CatalogController : Controller
+    [Route("/book")]
+    [ApiController]
+    public class CatalogController : ControllerBase
     {
         private readonly ICatalogRepo _repository;
         private readonly IMapper _mapper;
@@ -24,7 +25,7 @@ namespace BazarCatalogApi.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("book/{id}")]
+        [HttpGet("{id}")]
         public IActionResult GetBookById(int id)
         {
             var book = _repository.GetBookById(id);
@@ -36,7 +37,7 @@ namespace BazarCatalogApi.Controllers
             return Ok(_mapper.Map<BookReadDto>(book));
         }
 
-        [HttpGet("book/search/{topic}")]
+        [HttpGet("search/{topic}")]
         public IActionResult SearchForBookByTopic(string topic)
         {
             var books = _repository.SearchByTopic(topic);
@@ -48,7 +49,7 @@ namespace BazarCatalogApi.Controllers
             return Ok(_mapper.Map<IEnumerable<BookReadDto>>(books));
         }
 
-        [HttpPatch("book/update/{id}")]
+        [HttpPatch("update/{id}")]
         public IActionResult UpdateBookPartially(int id, JsonPatchDocument<BookUpdateDto> patchDocument)
         {
             var bookFromRepo = _repository.GetBookById(id);
