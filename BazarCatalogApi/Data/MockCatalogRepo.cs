@@ -63,5 +63,14 @@ namespace BazarCatalogApi.Data
             });
             return books;
         }
+
+        public void UpdateBook(Book book)
+        {
+        }
+
+        public bool SaveChanges()
+        {
+            return true;
+        }
     }
 }

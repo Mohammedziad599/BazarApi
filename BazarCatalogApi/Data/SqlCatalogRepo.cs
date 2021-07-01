@@ -26,5 +26,15 @@ namespace BazarCatalogApi.Data
                 select book).ToList();
             return booksList.Count == 0 ? null : booksList;
         }
+
+        public void UpdateBook(Book book)
+        {
+            //We Don't need to do anything here.
+        }
+
+        public bool SaveChanges()
+        {
+            return (_context.SaveChanges() >= 0);
+        }
     }
 }
