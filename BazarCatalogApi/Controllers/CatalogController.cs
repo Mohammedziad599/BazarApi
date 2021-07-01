@@ -1,4 +1,10 @@
+using System.Collections;
+using System.Collections.Generic;
+
+using AutoMapper;
+
 using BazarCatalogApi.Data;
+using BazarCatalogApi.Dtos;
 using BazarCatalogApi.Models;
 
 using Microsoft.AspNetCore.JsonPatch;
@@ -10,38 +16,58 @@ namespace BazarCatalogApi.Controllers
     public class CatalogController : Controller
     {
         private readonly ICatalogRepo _repository;
+        private readonly IMapper _mapper;
 
-        public CatalogController(ICatalogRepo repository)
+        public CatalogController(ICatalogRepo repository, IMapper mapper)
         {
             _repository = repository;
+            _mapper = mapper;
         }
 
         [HttpGet("book/{id}")]
         public IActionResult GetBookById(int id)
         {
-            var bookItem = _repository.GetBookById(id);
-            return Ok(bookItem);
+            var book = _repository.GetBookById(id);
+            if (book == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(_mapper.Map<BookReadDto>(book));
         }
 
         [HttpGet("book/search/{topic}")]
         public IActionResult SearchForBookByTopic(string topic)
         {
             var books = _repository.SearchByTopic(topic);
-            return Ok(books);
+            if (books == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(_mapper.Map<IEnumerable<BookReadDto>>(books));
         }
 
         [HttpPatch("book/update/{id}")]
-        public IActionResult UpdateBookPartially(int id, JsonPatchDocument<Book> patchDocument)
+        public IActionResult UpdateBookPartially(int id, JsonPatchDocument<BookUpdateDto> patchDocument)
         {
-            var book = _repository.GetBookById(id);
-            patchDocument.ApplyTo(book, ModelState);
-            if (!TryValidateModel(book))
+            var bookFromRepo = _repository.GetBookById(id);
+            if (bookFromRepo == null)
+            {
+                return NotFound();
+            }
+
+            var bookToPatch = _mapper.Map<BookUpdateDto>(bookFromRepo);
+            patchDocument.ApplyTo(bookToPatch, ModelState);
+            if (!TryValidateModel(bookToPatch))
             {
                 return ValidationProblem(ModelState);
             }
 
-            _repository.UpdateBook(book);
+            _mapper.Map(bookToPatch, bookFromRepo);
+            _repository.UpdateBook(bookFromRepo);
             _repository.SaveChanges();
+
             return NoContent();
         }
     }
