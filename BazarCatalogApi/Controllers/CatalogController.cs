@@ -1,11 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
 
 using AutoMapper;
 
 using BazarCatalogApi.Data;
 using BazarCatalogApi.Dtos;
-using BazarCatalogApi.Models;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;

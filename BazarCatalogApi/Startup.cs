@@ -1,21 +1,15 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
 using BazarCatalogApi.Data;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
 using Newtonsoft.Json.Serialization;
@@ -51,8 +45,8 @@ namespace BazarCatalogApi
                     Description = "A book catalog api",
                     Contact = new OpenApiContact()
                     {
-                        Name="Mohammed Ziad",
-                        Email="Mohammedziad599@gmail.com",
+                        Name = "Mohammed Ziad",
+                        Email = "Mohammedziad599@gmail.com",
                         Url = new Uri("https://github.com/Mohammedziad599")
                     }
                 });
