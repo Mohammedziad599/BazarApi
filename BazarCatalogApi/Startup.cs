@@ -44,6 +44,7 @@ namespace BazarCatalogApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "BazarCatalogApi", Version = "v1"});
             });
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddScoped<ICatalogRepo, SqlCatalogRepo>();
         }
 
