@@ -11,7 +11,7 @@ namespace BazarCatalogApi.Profiles
         {
             CreateMap<Book, BookReadDto>();
             CreateMap<Book, BookUpdateDto>();
-            CreateMap<BookReadDto, Book>();
+            CreateMap<BookUpdateDto, Book>();
         }
     }
 }
