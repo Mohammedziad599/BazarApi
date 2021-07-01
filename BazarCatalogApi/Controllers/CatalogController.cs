@@ -20,5 +20,12 @@ namespace BazarCatalogApi.Controllers
             var bookItem = _repository.GetBookById(id);
             return Ok(bookItem);
         }
+
+        [HttpGet("book/search/{topic}")]
+        public IActionResult SearchForBookByTopic(string topic)
+        {
+            var books = _repository.SearchByTopic(topic);
+            return Ok(books);
+        }
     }
 }
