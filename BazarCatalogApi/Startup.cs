@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 using BazarCatalogApi.Data;
@@ -42,7 +44,21 @@ namespace BazarCatalogApi
             });
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo {Title = "BazarCatalogApi", Version = "v1"});
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "Bazar Catalog API",
+                    Description = "A book catalog api",
+                    Contact = new OpenApiContact()
+                    {
+                        Name="Mohammed Ziad",
+                        Email="Mohammedziad599@gmail.com",
+                        Url = new Uri("https://github.com/Mohammedziad599")
+                    }
+                });
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
             });
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddScoped<ICatalogRepo, SqlCatalogRepo>();
