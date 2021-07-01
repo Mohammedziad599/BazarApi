@@ -1,5 +1,7 @@
 using BazarCatalogApi.Data;
+using BazarCatalogApi.Models;
 
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BazarCatalogApi.Controllers
@@ -26,6 +28,21 @@ namespace BazarCatalogApi.Controllers
         {
             var books = _repository.SearchByTopic(topic);
             return Ok(books);
+        }
+
+        [HttpPatch("book/update/{id}")]
+        public IActionResult UpdateBookPartially(int id, JsonPatchDocument<Book> patchDocument)
+        {
+            var book = _repository.GetBookById(id);
+            patchDocument.ApplyTo(book, ModelState);
+            if (!TryValidateModel(book))
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            _repository.UpdateBook(book);
+            _repository.SaveChanges();
+            return NoContent();
         }
     }
 }
