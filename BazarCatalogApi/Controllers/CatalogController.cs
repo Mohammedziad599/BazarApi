@@ -65,7 +65,6 @@ namespace BazarCatalogApi.Controllers
         /// <response code="200">returns the book info</response>
         /// <response code="400">if the id is not an integer</response>
         /// <response code="404">if the book does not exist</response>
-        // [EnableCors("{CorsPolicy}")]
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -95,7 +94,6 @@ namespace BazarCatalogApi.Controllers
         /// <response code="200">returns an array of books info</response>
         /// <response code="400">if the topic is not an specified</response>
         /// <response code="404">if there is no books with matching topic</response>
-        // [EnableCors("{CorsPolicy}")]
         [HttpGet("search/{topic}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -134,7 +132,6 @@ namespace BazarCatalogApi.Controllers
         /// <response code="400">if there is an error in the request or in the Json Patch Syntax</response>
         /// <response code="404">if the book specified by the id does not exist</response>
         /// <response code="405">if the id was not specified</response>
-        // [EnableCors("{CorsPolicy}")]
         [HttpPatch("update/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
