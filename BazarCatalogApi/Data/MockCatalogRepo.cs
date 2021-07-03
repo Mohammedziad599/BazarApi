@@ -6,6 +6,11 @@ namespace BazarCatalogApi.Data
 {
     public class MockCatalogRepo : ICatalogRepo
     {
+        public IEnumerable<Book> GetAllBooks()
+        {
+            return SearchByTopic("");
+        }
+
         public Book GetBookById(int id)
         {
             return new()
