@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 using AutoMapper;
 
@@ -23,6 +24,31 @@ namespace BazarCatalogApi.Controllers
         {
             _repository = repository;
             _mapper = mapper;
+        }
+
+        /// <summary>
+        /// return all the books stored.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     GET /book/
+        /// 
+        /// </remarks>
+        /// <returns>all the books as a json array</returns>
+        /// <response core="200">if there is books</response>
+        /// <response code="404">if there is no books</response>
+        [HttpGet]
+        public IActionResult GetAllBooks()
+        {
+            var books = _repository.GetAllBooks();
+
+            if (!books.Any())
+            {
+                return NotFound();
+            }
+
+            return Ok(_mapper.Map<IEnumerable<BookReadDto>>(books));
         }
 
         /// <summary>
