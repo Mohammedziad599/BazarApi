@@ -6,6 +6,7 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using BazarOrderApi.Data;
 using BazarOrderApi.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -16,10 +17,12 @@ namespace BazarOrderApi.Controllers
     public class OrderController : ControllerBase
     {
         private readonly IHttpClientFactory _clientFactory;
+        private readonly IOrderRepo _repo;
 
-        public OrderController(IHttpClientFactory clientFactory)
+        public OrderController(IHttpClientFactory clientFactory, IOrderRepo repo)
         {
             _clientFactory = clientFactory;
+            _repo = repo;
         }
 
         [HttpPost("/order/{id}")]
@@ -44,9 +47,16 @@ namespace BazarOrderApi.Controllers
                     updateRequest.Content = new StringContent(JsonConvert.SerializeObject(patchDocument));
                     updateRequest.Content.Headers.ContentType = new MediaTypeWithQualityHeaderValue("application/json");
                     var updateResponse = await client.SendAsync(updateRequest);
-                    if (updateResponse.StatusCode == HttpStatusCode.NoContent)
+                    if(updateResponse.StatusCode == HttpStatusCode.NoContent)
                     {
-                        return Ok();
+                        var order = new Order()
+                        {
+                            BookId = id,
+                            Time = DateTime.Now
+                        };
+                        _repo.AddOrder(order);
+                        _repo.SaveChanges();
+                        return Ok(order);
                     }
                 }
                 else
