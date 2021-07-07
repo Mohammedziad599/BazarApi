@@ -4,7 +4,7 @@ namespace BazarOrderApi.Data
 {
     public interface IOrderRepo
     {
-        public Order AddOrder(Order order);
+        public void  AddOrder(Order order);
         public bool SaveChanges();
     }
 }
