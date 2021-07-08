@@ -4,7 +4,7 @@ the catalog api which contains list of all the books
 available, and the second is the order api which handle
 the ordering process and write the order to the database as a log.
 
-# How To Run:
+# How To Run
 The project uses the docker containers to build the
 project each project has it's own Dockerfile that will
 build and publish the api on http and https, but the https
