@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace BazarOrderApi.Models
+namespace BazarOrderApi.Dto
 {
-    public class Order
+    public class OrderReadDto
     {
         [Required]
         public int Id { get; set; }
