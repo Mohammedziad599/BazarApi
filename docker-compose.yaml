@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+  catalog:
+    build: ./BazarCatalogApi
+    ports:
+      - 5001:80
+    volumes:
+    - ./BazarCatalogApi/Books.db:/app/Books.db
+  order:
+    build: ./BazarOrderApi
+    ports:
+      - 5003:80
+    volumes:
+      - ./BazarOrderApi/Orders.db:/app/Orders.db
