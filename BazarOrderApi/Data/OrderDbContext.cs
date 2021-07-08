@@ -1,4 +1,5 @@
 ﻿using BazarOrderApi.Models;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace BazarOrderApi.Data
@@ -7,7 +8,6 @@ namespace BazarOrderApi.Data
     {
         public OrderDbContext(DbContextOptions<OrderDbContext> options) : base(options)
         {
-            
         }
 
         public DbSet<Order> Orders { get; set; }
