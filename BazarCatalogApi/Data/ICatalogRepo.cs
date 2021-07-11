@@ -9,6 +9,7 @@ namespace BazarCatalogApi.Data
         IEnumerable<Book> GetAllBooks();
         Book GetBookById(int id);
         IEnumerable<Book> SearchByTopic(string topic);
+        IEnumerable<Book> SearchByName(string name);
         void UpdateBook(Book book);
         bool SaveChanges();
     }
