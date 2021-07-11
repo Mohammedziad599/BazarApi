@@ -36,6 +36,7 @@ namespace BazarOrderApi
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "BazarOrderApi", Version = "v1"});
             });
             services.AddScoped<IOrderRepo, SqlOrderRepo>();
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,6 +52,13 @@ namespace BazarOrderApi
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(builder =>
+            {
+                builder.AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowAnyOrigin();
+            });
 
             app.UseAuthorization();
 

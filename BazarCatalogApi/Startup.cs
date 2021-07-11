@@ -73,12 +73,14 @@ namespace BazarCatalogApi
             // app.UseHttpsRedirection();
 
             app.UseRouting();
+
             app.UseCors(builder =>
             {
                 builder.AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowAnyOrigin();
             });
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
