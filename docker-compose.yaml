@@ -1,0 +1,27 @@
+version: "3"
+
+services:
+  catalog:
+    build: ./BazarCatalogApi
+    ports:
+      - 5000:80
+      - 5001:443
+    environment:
+      - ASPNETCORE_URLS=https://+;http://+
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=mohammed
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/root/.aspnet/https/BazarCatalogApi.pfx
+    volumes:
+      - ./BazarCatalogApi/Books.db:/app/Books.db
+      - ./BazarCatalogApi.pfx:/root/.aspnet/https/BazarCatalogApi.pfx
+  order:
+    build: ./BazarOrderApi
+    ports:
+      - 5002:80
+      - 5003:443
+    environment:
+      - ASPNETCORE_URLS=https://+;http://+
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=mohammed
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/root/.aspnet/https/BazarOrderApi.pfx
+    volumes:
+      - ./BazarOrderApi/Orders.db:/app/Orders.db
+      - ./BazarOrderApi.pfx:/root/.aspnet/https/BazarOrderApi.pfx
