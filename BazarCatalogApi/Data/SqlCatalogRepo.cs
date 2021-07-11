@@ -32,6 +32,14 @@ namespace BazarCatalogApi.Data
             return booksList.Count == 0 ? null : booksList;
         }
 
+        public IEnumerable<Book> SearchByName(string name)
+        {
+            var booksList = (from book in _context.Books
+                where book.Name.Contains(name)
+                select book).ToList();
+            return booksList.Count == 0 ? null : booksList;
+        }
+
         public void UpdateBook(Book book)
         {
             //We Don't need to do anything here.
