@@ -11,6 +11,8 @@ namespace BazarCatalogApi.Data
         IEnumerable<Book> SearchByTopic(string topic);
         IEnumerable<Book> SearchByName(string name);
         void UpdateBook(Book book);
+        void DecreaseBookQuantity(int id);
+        void IncreaseBookQuantity(int id);
         bool SaveChanges();
     }
 }

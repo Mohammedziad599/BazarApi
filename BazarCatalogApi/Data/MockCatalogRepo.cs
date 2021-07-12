@@ -119,6 +119,16 @@ namespace BazarCatalogApi.Data
         {
         }
 
+        public void DecreaseBookQuantity(int id)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void IncreaseBookQuantity(int id)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public bool SaveChanges()
         {
             return true;

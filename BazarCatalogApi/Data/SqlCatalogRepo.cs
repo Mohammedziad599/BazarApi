@@ -1,7 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 using BazarCatalogApi.Models;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace BazarCatalogApi.Data
 {
@@ -43,6 +46,26 @@ namespace BazarCatalogApi.Data
         public void UpdateBook(Book book)
         {
             //We Don't need to do anything here.
+        }
+
+        public void DecreaseBookQuantity(int id)
+        {
+            var rowCount = _context.Database.ExecuteSqlInterpolated(
+                $"UPDATE Books SET Quantity= Quantity - 1 WHERE Id={id} and Quantity > 0");
+            if (rowCount == 0)
+            {
+                throw new InvalidOperationException($"Book with id={id} is out of stock.");
+            }
+        }
+
+        public void IncreaseBookQuantity(int id)
+        {
+            var rowCount = _context.Database.ExecuteSqlInterpolated(
+                $"UPDATE Books SET Quantity = Quantity + 1 WHERE Id={id}");
+            if (rowCount == 0)
+            {
+                throw new InvalidOperationException($"Book with id={id} is out of stock.");
+            }
         }
 
         public bool SaveChanges()
