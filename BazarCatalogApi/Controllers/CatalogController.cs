@@ -131,7 +131,7 @@ namespace BazarCatalogApi.Controllers
         /// <param name="id">the id of the book starting from 1</param>
         /// <param name="patchDocument">the patch document as specified by the json patch</param>
         /// <returns>nothing</returns>
-        /// <response code="204">return Nothing if the operation has Success</response>
+        /// <response code="204">return Nothing if the operation has Succeed</response>
         /// <response code="400">if there is an error in the request or in the Json Patch Syntax</response>
         /// <response code="404">if the book specified by the id does not exist</response>
         /// <response code="405">if the id was not specified</response>
