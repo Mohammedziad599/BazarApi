@@ -118,7 +118,7 @@ namespace BazarCatalogApi.Controllers
         /// <remarks>
         /// Sample request:
         ///
-        ///     GET /book/searchN/dist
+        ///     GET /book/name/search/DOS
         /// 
         /// </remarks>
         /// <param name="name">a part or the whole name to be searched</param>
