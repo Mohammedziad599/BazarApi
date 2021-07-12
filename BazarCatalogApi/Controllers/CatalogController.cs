@@ -249,7 +249,7 @@ namespace BazarCatalogApi.Controllers
         /// <response code="200">returns a book info</response>
         /// <response code="400">if the name is not an specified</response>
         /// <response code="404">if there is no book with matching name</response>
-        [HttpGet("searchN/{name}")]
+        [HttpGet("name/search/{name}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
