@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -160,6 +161,80 @@ namespace BazarCatalogApi.Controllers
 
             return NoContent();
         }
+
+        /// <summary>
+        /// decrement the book quantity by 1.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /book/quantity/dec/1
+        ///     
+        /// </remarks>>
+        /// <param name="id">the id of the book starting from 1</param>
+        /// <returns>nothing</returns>
+        /// <response code="204">return nothing if the operation has Succeed</response>
+        /// <response code="400">if there is an error in the request or the quantity equal to zero</response>
+        /// <response code="404">if the book specified by the id does not exist</response>
+        /// <response code="405">if the id was not specified</response>
+        [HttpPost("quantity/dec/{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status405MethodNotAllowed)]
+        public IActionResult DecrementBookQuantity(int id)
+        {
+            if (_repository.GetBookById(id) == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                _repository.DecreaseBookQuantity(id);
+            }
+            catch (InvalidOperationException)
+            {
+                return Problem("Item is Out of Stock",
+                    $"/book/{id}",
+                    400, $"Cannot Purchase Book with id={id}");
+            }
+
+            return NoContent();
+        }
+
+        /// <summary>
+        /// increment the book quantity by 1.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /book/quantity/inc/1
+        ///     
+        /// </remarks>>
+        /// <param name="id">the id of the book starting from 1</param>
+        /// <returns>nothing</returns>
+        /// <response code="204">return nothing if the operation has Succeed</response>
+        /// <response code="400">if there is an error in the request</response>
+        /// <response code="404">if the book specified by the id does not exist</response>
+        /// <response code="405">if the id was not specified</response>
+        [HttpPost("quantity/inc/{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status405MethodNotAllowed)]
+        public IActionResult IncrementBookQuantity(int id)
+        {
+            if (_repository.GetBookById(id) == null)
+            {
+                return NotFound();
+            }
+
+            _repository.IncreaseBookQuantity(id);
+
+            return NoContent();
+        }
+
         /// <summary>
         /// search for the books using a name.
         /// </summary>
@@ -188,6 +263,5 @@ namespace BazarCatalogApi.Controllers
 
             return Ok(_mapper.Map<IEnumerable<BookReadDto>>(books));
         }
-
     }
 }
