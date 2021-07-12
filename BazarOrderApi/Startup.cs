@@ -1,4 +1,6 @@
 using System;
+using System.IO;
+using System.Reflection;
 
 using BazarOrderApi.Data;
 
@@ -33,7 +35,21 @@ namespace BazarOrderApi
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo {Title = "BazarOrderApi", Version = "v1"});
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "Bazar Order API",
+                    Description = "A book order api",
+                    Contact = new OpenApiContact()
+                    {
+                        Name = "Mohammed Ziad",
+                        Email = "Mohammedziad599@gmail.com",
+                        Url = new Uri("https://github.com/Mohammedziad599")
+                    }
+                });
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
             });
             services.AddScoped<IOrderRepo, SqlOrderRepo>();
             services.AddCors();
@@ -45,6 +61,11 @@ namespace BazarOrderApi
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BazarOrderApi v1"));
+            }
+            else
+            {
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BazarOrderApi v1"));
             }
