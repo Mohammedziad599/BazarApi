@@ -11,10 +11,7 @@ using BazarOrderApi.Data;
 using BazarOrderApi.Dto;
 using BazarOrderApi.Models;
 
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-
-using Newtonsoft.Json;
 
 namespace BazarOrderApi.Controllers
 {
@@ -32,7 +29,7 @@ namespace BazarOrderApi.Controllers
         }
 
         [HttpPost("/order/{id}")]
-        public async Task<IActionResult> Orderbook(int id)
+        public async Task<IActionResult> OrderBook(int id)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:5000/book/" + id);
             request.Headers.Add("Accept", "application/json");
@@ -45,17 +42,16 @@ namespace BazarOrderApi.Controllers
 
                 if (book?.Quantity > 0)
                 {
-                    var newQuantity = book.Quantity - 1;
                     var updateRequest =
-                        new HttpRequestMessage(HttpMethod.Patch, "http://localhost:5000/book/update/" + id);
-                    var patchDocument = new JsonPatchDocument();
-                    patchDocument.Replace("/quantity", "" + newQuantity);
-                    updateRequest.Content = new StringContent(JsonConvert.SerializeObject(patchDocument));
+                        new HttpRequestMessage(HttpMethod.Post, "http://localhost:5000/book/quantity/dec/" + id)
+                        {
+                            Content = new StringContent("")
+                        };
                     updateRequest.Content.Headers.ContentType = new MediaTypeWithQualityHeaderValue("application/json");
                     var updateResponse = await client.SendAsync(updateRequest);
                     if (updateResponse.StatusCode == HttpStatusCode.NoContent)
                     {
-                        var order = new Order()
+                        var order = new Order
                         {
                             BookId = id,
                             Time = DateTime.Now
@@ -64,15 +60,26 @@ namespace BazarOrderApi.Controllers
                         _repo.SaveChanges();
                         return Ok(_mapper.Map<OrderReadDto>(order));
                     }
+
+                    if (updateResponse.StatusCode == HttpStatusCode.BadRequest)
+                    {
+                        return Problem("Book is out of Stock",
+                            $"http://localhost:5000/book/{id}",
+                            404, "Out of Stock Error");
+                    }
                 }
                 else
                 {
-                    return NotFound("{\"status\":\"Book Out Of Stock\"}");
+                    return Problem("Book is out of Stock",
+                        $"http://localhost:5000/book/{id}",
+                        404, "Out of Stock Error");
                 }
             }
             else if (response.StatusCode == HttpStatusCode.NotFound)
             {
-                return NotFound(response.Content);
+                return Problem($"Book with id={id} does not exist",
+                    $"http://localhost:5000/book/{id}",
+                    404, "Book Does Not Exist Error");
             }
             else if (response.StatusCode == HttpStatusCode.BadRequest)
             {
