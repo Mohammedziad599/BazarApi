@@ -69,6 +69,11 @@ namespace BazarCatalogApi
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BazarCatalogApi v1"));
             }
+            else
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BazarCatalogApi v1"));
+            }
 
             // app.UseHttpsRedirection();
 
