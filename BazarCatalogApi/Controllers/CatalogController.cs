@@ -111,6 +111,35 @@ namespace BazarCatalogApi.Controllers
 
             return Ok(_mapper.Map<IEnumerable<BookReadDto>>(books));
         }
+        
+        /// <summary>
+        /// search for the books using a name.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     GET /book/searchN/dist
+        /// 
+        /// </remarks>
+        /// <param name="name">a part or the whole name to be searched</param>
+        /// <returns>a book</returns>
+        /// <response code="200">returns a book info</response>
+        /// <response code="400">if the name is not an specified</response>
+        /// <response code="404">if there is no book with matching name</response>
+        [HttpGet("name/search/{name}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult SearchForBookByName(string name)
+        {
+            var books = _repository.SearchByName(name);
+            if (books == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(_mapper.Map<IEnumerable<BookReadDto>>(books));
+        }
 
         /// <summary>
         /// update the book partially
@@ -233,35 +262,6 @@ namespace BazarCatalogApi.Controllers
             _repository.IncreaseBookQuantity(id);
 
             return NoContent();
-        }
-
-        /// <summary>
-        /// search for the books using a name.
-        /// </summary>
-        /// <remarks>
-        /// Sample request:
-        ///
-        ///     GET /book/searchN/dist
-        /// 
-        /// </remarks>
-        /// <param name="name">a part or the whole name to be searched</param>
-        /// <returns>a book</returns>
-        /// <response code="200">returns a book info</response>
-        /// <response code="400">if the name is not an specified</response>
-        /// <response code="404">if there is no book with matching name</response>
-        [HttpGet("name/search/{name}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult SearchForBookByName(string name)
-        {
-            var books = _repository.SearchByName(name);
-            if (books == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(_mapper.Map<IEnumerable<BookReadDto>>(books));
         }
     }
 }
