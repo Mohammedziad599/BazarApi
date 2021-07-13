@@ -1,4 +1,7 @@
-﻿using BazarOrderApi.Models;
+﻿using System.Collections.Generic;
+using System.Linq;
+
+using BazarOrderApi.Models;
 
 namespace BazarOrderApi.Data
 {
@@ -9,6 +12,18 @@ namespace BazarOrderApi.Data
         public SqlOrderRepo(OrderDbContext context)
         {
             _context = context;
+        }
+
+        public IEnumerable<Order> GetAllOrders()
+        {
+            var orders = _context.Orders.ToList();
+            return !orders.Any() ? null : orders;
+        }
+
+        public Order GetOrderById(int id)
+        {
+            var order = _context.Orders.FirstOrDefault(_order => _order.Id == id);
+            return order;
         }
 
         public void AddOrder(Order order)
