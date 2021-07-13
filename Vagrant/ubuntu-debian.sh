@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+echo "Installing CURL using apt"
+sudo apt install -y curl
+
 echo "Installing gpg key for the vagrant repo and adding it to apt"
 curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
 
