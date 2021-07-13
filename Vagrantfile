@@ -17,8 +17,7 @@ Vagrant.configure("2") do |config|
   
   config.vm.define "catalog" do |catalog|
     catalog.vm.box = "ubuntu/focal64"
-    catalog.vm.network "forwarded_port", guest: 80, host: 5000
-    catalog.vm.network "forwarded_port", guest: 443, host: 5001
+    catalog.vm.network "private_network", ip: "192.168.50.100"
     catalog.vm.provision "file", source: "BazarCatalogApi", destination: "$HOME/src"
     catalog.vm.provision "file", source: "BazarCatalogApi.pfx", destination: "$HOME/app/publish/BazarCatalogApi.pfx"
     catalog.vm.provision "shell", path: "Vagrant/Dotnet Scripts/dotnet.sh", privileged: true
