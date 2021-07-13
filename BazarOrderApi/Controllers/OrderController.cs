@@ -22,12 +22,14 @@ namespace BazarOrderApi.Controllers
         private readonly IHttpClientFactory _clientFactory;
         private readonly IOrderRepo _repo;
         private readonly IMapper _mapper;
+        private bool InDocker { get; set; }
 
         public OrderController(IHttpClientFactory clientFactory, IOrderRepo repo, IMapper mapper)
         {
             _clientFactory = clientFactory;
             _repo = repo;
             _mapper = mapper;
+            InDocker = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
         }
 
         /// <summary>
@@ -111,7 +113,8 @@ namespace BazarOrderApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> OrderBook(int id)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, "https://192.168.50.100/book/" + id);
+            var request = new HttpRequestMessage(HttpMethod.Get,
+                $"https://{(InDocker ? "catalog" : "192.168.50.100")}/book/{id}");
             request.Headers.Add("Accept", "application/json");
             var client = _clientFactory.CreateClient();
             var response = await client.SendAsync(request);
@@ -123,7 +126,8 @@ namespace BazarOrderApi.Controllers
                 if (book?.Quantity > 0)
                 {
                     var updateRequest =
-                        new HttpRequestMessage(HttpMethod.Post, "https://192.168.50.100/book/quantity/dec/" + id)
+                        new HttpRequestMessage(HttpMethod.Post,
+                            $"https://{(InDocker ? "catalog" : "192.168.50.100")}/book/quantity/dec/{id}")
                         {
                             Content = new StringContent("")
                         };
