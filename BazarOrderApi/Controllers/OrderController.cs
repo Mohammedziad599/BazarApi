@@ -111,7 +111,7 @@ namespace BazarOrderApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> OrderBook(int id)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:5000/book/" + id);
+            var request = new HttpRequestMessage(HttpMethod.Get, "https://192.168.50.100/book/" + id);
             request.Headers.Add("Accept", "application/json");
             var client = _clientFactory.CreateClient();
             var response = await client.SendAsync(request);
@@ -123,7 +123,7 @@ namespace BazarOrderApi.Controllers
                 if (book?.Quantity > 0)
                 {
                     var updateRequest =
-                        new HttpRequestMessage(HttpMethod.Post, "http://localhost:5000/book/quantity/dec/" + id)
+                        new HttpRequestMessage(HttpMethod.Post, "https://192.168.50.100/book/quantity/dec/" + id)
                         {
                             Content = new StringContent("")
                         };
