@@ -1,125 +1,132 @@
 
-body{
+body {
     font-family: 'Roboto', sans-serif;
     min-height: 100vh;
 }
-table{ 
-     font-family: arial, sans-serif;
-     border-collapse: collapse;width: 100%;
-    }
 
-    td, th { 
-        border: 1px solid #dddddd;
-        text-align: left;padding: 8px;
-    }
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
 
-    tr:nth-child(even) {
-        background-color: #dddddd;
-    } 
-    #all{
-        margin: 1em;
-        background: none;
-        border: none;
-        color: #cfd3d3;
-        background-color: rgb(40, 39, 107);
-        padding: 1em 1.5em;
-        font-size: 1em;
-        border-radius: 25px;
-        font-weight: bolder;
-    }
-    #list{
-        margin: 1em;
-        background: none;
-        border: none;
-        color: #cfd3d3;
-        background-color: rgb(40, 39, 107);
-        padding: 1em 1.5em;
-        font-size: 1em;
-        border-radius: 25px;
-        font-weight: bolder;
-    }
-    #gob{
-        height: 26px;
-        width: 66px;
-        margin-top: 45px;
-        margin-left:50 ;
-        background: none;
-        border: none;
-        color: #cfd3d3;
-        background-color: rgb(40, 39, 107);
-        font-size: 1em;
-        border-radius: 25px;
-        font-weight: bolder;
-    }
-    .modal {
-        display: none;
-        position: fixed; 
-        z-index: 1; 
-        padding-top: 100px; 
-        left: 0;
-        top: 0;
-        width: 100%; 
-        height: 100%; 
-        overflow: auto; 
-        background-color: rgb(0,0,0); 
-        background-color: rgba(0,0,0,0.4);
-      }
-      
-  
-      .modal-content {
-        background-color: #fefefe;
-        margin: 20px;
-        padding: 20px;
-        border: 1px solid #888;
-        width: 80%;
-      }
-      
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
 
-      .close {
-        color: #aaaaaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-      }
-      
-      .close:hover,
-      .close:focus {
-        color: #000;
-        text-decoration: none;
-        cursor: pointer;
-      }
-@media(min-width: 900px){
-    .nav-bar{
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+
+#all {
+    margin: 1em;
+    border: none;
+    color: #cfd3d3;
+    background: rgb(40, 39, 107) none;
+    padding: 1em 1.5em;
+    font-size: 1em;
+    border-radius: 25px;
+    font-weight: bolder;
+}
+
+#list {
+    margin: 1em;
+    border: none;
+    color: #cfd3d3;
+    background: rgb(40, 39, 107) none;
+    padding: 1em 1.5em;
+    font-size: 1em;
+    border-radius: 25px;
+    font-weight: bolder;
+}
+
+#gob {
+    height: 26px;
+    width: 66px;
+    margin-top: 45px;
+    margin-left: 50px;
+    border: none;
+    color: #cfd3d3;
+    background: rgb(40, 39, 107) none;
+    font-size: 1em;
+    border-radius: 25px;
+    font-weight: bolder;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    padding-top: 100px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+
+.close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+@media (min-width: 900px) {
+    .nav-bar {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
     }
 
-    .nav1{
+    .nav1 {
         display: flex;
         flex-direction: row;
         margin-left: 1em;
         margin-bottom: 1em;
         margin-top: 1em;
-        
+
     }
-  
-    .nav1 input{
+
+    .nav1 input {
         border: none;
         margin-left: 0.5em;
         padding: 0.8em 1em;
         font-size: 1em;
     }
-    
-    .nav1 input::placeholder{
+
+    .nav1 input::placeholder {
         font-family: 'Roboto', sans-serif;
         color: #adb5bd;
         font-size: 1em;
     }
-    input:focus, textarea:focus, select:focus{
+
+    input:focus, textarea:focus, select:focus {
         outline: none;
     }
-    .nav-bar h3{
+
+    .nav-bar h3 {
         padding: 0.8em 1em;
         margin-left: 1em;
         margin-bottom: 1em;
@@ -127,17 +134,20 @@ table{
         font-size: 2em;
         font-weight: bold;
     }
-    .icon-about{
+
+    .icon-about {
         display: flex;
         align-items: center;
     }
-    .material-icons-outlined{
+
+    .material-icons-outlined {
         color: #adb5bd;
-        size: 2px;
+        /*size: 2px;*/
         margin-right: 1em;
-    
+
     }
-    .icon-about a{
+
+    .icon-about a {
         margin-right: 2em;
         text-decoration: none;
         color: #adb5bd;
@@ -145,7 +155,8 @@ table{
         border-left: 1px solid #adb5bd;
         padding-left: 1em;
     }
-    main{
+
+    main {
         margin-top: 1em;
         font-family: sans-serif;
         display: flex;
@@ -154,7 +165,8 @@ table{
         justify-content: space-evenly;
         align-items: center;
     }
-    .books{
+
+    .books {
         display: flex;
         flex-direction: row;
         width: 100%;
@@ -163,48 +175,55 @@ table{
         background-color: #cbb5e2;
         border-radius: 10px;
         margin-bottom: 3em;
-        box-shadow: rgba(0, 0, 0, 0.25) 0px 25px 50px -12px;
+        box-shadow: rgba(0, 0, 0, 0.25) 0 25px 50px -12px;
     }
-    .books:nth-of-type(2){
+
+    .books:nth-of-type(2) {
         background-color: #fbadaf;
     }
-    .books:nth-of-type(3){
+
+    .books:nth-of-type(3) {
         background-color: #a4e0eb;
     }
-    .books:nth-of-type(4){
+
+    .books:nth-of-type(4) {
         background-color: #fdca95;
     }
-    .book-img{
+
+    .book-img {
         width: 100%;
         max-width: 500px;
         border-radius: 3px;
         margin: 1.5em;
-        box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+        box-shadow: rgba(0, 0, 0, 0.19) 0 10px 20px, rgba(0, 0, 0, 0.23) 0 6px 6px;
     }
-    .descp{
+
+    .descp {
         margin: 1.5em;
-        padding: 1em;    
+        padding: 1em;
 
     }
-    .book-name{
+
+    .book-name {
         font-weight: bold;
         padding-bottom: 0.5em;
         font-size: 1.1em;
         letter-spacing: 1px;
         color: white;
     }
-    .topic{
+
+    .topic {
         padding-bottom: 0.5em;
         font-size: 1.1em;
         letter-spacing: 1px;
         color: white;
     }
-    .descp button{
+
+    .descp button {
         margin-top: 1em;
-        background: none;
         border: none;
         color: #cbb5e2;
-        background-color: white;
+        background: white none;
         padding: 0.6em 1.5em;
         font-size: 1em;
         border-radius: 25px;
