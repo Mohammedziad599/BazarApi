@@ -24,6 +24,16 @@ Vagrant.configure("2") do |config|
     catalog.vm.provision "shell", path: "Vagrant/Dotnet Scripts/Catalog/dotnet-build.sh", privileged: false
     catalog.vm.provision "shell", path: "Vagrant/Dotnet Scripts/Catalog/dotnet-run.sh", privileged: true, run: 'always'
   end
+  
+  config.vm.define "order" do |order|
+      order.vm.box = "ubuntu/focal64"
+      order.vm.network "private_network", ip: "192.168.50.101"
+      order.vm.provision "file", source: "BazarOrderApi", destination: "$HOME/src"
+      order.vm.provision "file", source: "BazarOrderApi.pfx", destination: "$HOME/app/publish/BazarOrderApi.pfx"
+      order.vm.provision "shell", path: "Vagrant/Dotnet Scripts/dotnet.sh", privileged: true
+      order.vm.provision "shell", path: "Vagrant/Dotnet Scripts/Order/dotnet-build.sh", privileged: false
+      order.vm.provision "shell", path: "Vagrant/Dotnet Scripts/Order/dotnet-run.sh", privileged: true, run: 'always'
+    end
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
