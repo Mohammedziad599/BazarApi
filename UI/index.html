@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BAZAR</title>
+    <link rel="stylesheet" href="cssdos.css">
+<script src="javasc.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- Fonts...... -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300&display=swap" rel="stylesheet">
+</head>
+
+<body onload="getbookn()">
+    <nav class="nav-bar">
+        <div class="nav1">
+            <input id="myInput" placeholder="Search Book">
+            <button type="submit" id="gob"  onclick="Search()">Go</button>
+        </div>
+        
+        <h3 id ="header3">Bazar.com</h3>
+    </nav>
+
+    <main>
+        <div class="books">
+          
+            <div class="descp">
+                <h2 id="n1" class="book-name">Xen and the Art of Surviving Undergraduate School</h2>
+                <button type="submit" id="b1" onclick="buy(this)">purchase</button>
+                <button type="submit" id="b11"  onclick="info(this)">info</button>
+            </div>
+        </div>
+
+        <div class="books">
+      
+            <div class="descp">
+                <h2  id="n2"  class="book-name">How to get a good grade in DOS in 40 minutes a day</h2>
+                <button type="submit" id="b2" onclick="buy(this)">purchase</button>
+             <button type="submit" id="b22"  onclick="info(this)">info</button>
+            </div>
+        </div>
+
+        <div class="books">
+        
+            <div class="descp" id = "small">
+                <h2  id="n3"  class="book-name"> RPCs for Noobs.</h2>
+                <button type="submit" id="b3" onclick="buy(this)">purchase</button>
+                 <button type="submit" id="b33"  onclick="info(this)">info</button>
+            </div>
+        </div>
+
+        <div class="books">
+            <div class="descp">
+                <h2  id="n4"  class="book-name">Cooking for the Impatient Undergrad</h2>
+                <button type="submit" id="b4" onclick="buy(this)">purchase</button>
+                 <button type="submit" id="b44"  onclick="info(this)">info</button>
+            </div>
+        </div>
+    </main>
+<table id="myTable"> 
+ <button type="submit" id="all"  onclick="infoall(this)">all</button>
+ <button type="submit" id="list"  onclick="listbook(this)">see list</button>
+    <tr> 
+    <th>name</th> 
+    <th>topic</th>
+     <th>quantity</th> 
+     <th>price</th>
+      </tr>
+       <tr>
+       <td id="bn">---</td>
+        <td id="bt">---</td>
+         <td id="bq">0</td>
+          <td id="bp">0</td>
+           </tr>
+
+            </table>
+
+                             <div id="myModal" class="modal">
+
+                                 <div class="modal-content">
+                                  <span class="close" onclick="modalgo()">&times;</span>
+                                   <p id="p1">Some text in the Modal..</p>
+                                 </div>
+
+                             </div>
+</body>
+
+</html>
