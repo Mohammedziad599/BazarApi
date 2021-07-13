@@ -114,7 +114,7 @@ namespace BazarOrderApi.Controllers
         public async Task<IActionResult> OrderBook(int id)
         {
             var request = new HttpRequestMessage(HttpMethod.Get,
-                $"https://{(InDocker ? "catalog" : "192.168.50.100")}/book/{id}");
+                $"http://{(InDocker ? "catalog" : "192.168.50.100")}/book/{id}");
             request.Headers.Add("Accept", "application/json");
             var client = _clientFactory.CreateClient();
             var response = await client.SendAsync(request);
@@ -127,7 +127,7 @@ namespace BazarOrderApi.Controllers
                 {
                     var updateRequest =
                         new HttpRequestMessage(HttpMethod.Post,
-                            $"https://{(InDocker ? "catalog" : "192.168.50.100")}/book/quantity/dec/{id}")
+                            $"http://{(InDocker ? "catalog" : "192.168.50.100")}/book/quantity/dec/{id}")
                         {
                             Content = new StringContent("")
                         };
