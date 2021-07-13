@@ -9,7 +9,7 @@ and at each one of them you can visit `https://serverip/swagger/`
 for a documentation on each api and it's endpoints, also you can use that page
 to consume the api endpoints.
 
-#Table of Content:
+# Table of Content:
 
 - [Vagrant](#Vagrant "Vagrant Guide")
     * [Vagrant Installation](#vagrant-installation "Vagrant Installation Guide")
