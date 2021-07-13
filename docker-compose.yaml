@@ -1,28 +1,38 @@
 version: "3"
-# TODO update catalog to have ip: 192.168.50.100 on the host.
-# TODO update order to have ip: 192.168.50.101 on the host.
+
 services:
   catalog:
     build: ./BazarCatalogApi
     ports:
-      - 5000:80
-      - 5001:443
+      - "5000:80"
+      - "5001:443"
     environment:
       - ASPNETCORE_URLS=https://+;http://+
       - ASPNETCORE_Kestrel__Certificates__Default__Password=mohammed
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/root/.aspnet/https/BazarCatalogApi.pfx
+      - DOTNET_RUNNING_IN_CONTAINER=true
     volumes:
       - ./BazarCatalogApi/Books.db:/app/Books.db
       - ./BazarCatalogApi.pfx:/root/.aspnet/https/BazarCatalogApi.pfx
+    networks:
+      - network
   order:
     build: ./BazarOrderApi
     ports:
-      - 5002:80
-      - 5003:443
+    - "6000:80"
+    - "6001:443"
     environment:
       - ASPNETCORE_URLS=https://+;http://+
       - ASPNETCORE_Kestrel__Certificates__Default__Password=mohammed
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/root/.aspnet/https/BazarOrderApi.pfx
+      - DOTNET_RUNNING_IN_CONTAINER=true
     volumes:
       - ./BazarOrderApi/Orders.db:/app/Orders.db
       - ./BazarOrderApi.pfx:/root/.aspnet/https/BazarOrderApi.pfx
+    networks:
+      - network
+    depends_on:
+      - catalog
+networks:
+  network:
+    driver: bridge
