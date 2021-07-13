@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -27,6 +28,59 @@ namespace BazarOrderApi.Controllers
             _clientFactory = clientFactory;
             _repo = repo;
             _mapper = mapper;
+        }
+
+        /// <summary>
+        /// return all the orders stored.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     GET /order/
+        /// 
+        /// </remarks>
+        /// <returns>all the orders as a json array</returns>
+        /// <response code="200">success orders as json array</response>
+        /// <response code="404">if there is no orders</response>
+        [HttpGet("order")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult GetAllOrders()
+        {
+            var orders = _repo.GetAllOrders();
+            if (orders == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(_mapper.Map<IEnumerable<OrderReadDto>>(orders));
+        }
+
+        /// <summary>
+        /// returns a specific order.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     GET /order/1
+        /// 
+        /// </remarks>
+        /// <param name="id"> the id of the order starting from 1</param>
+        /// <returns>order info</returns>
+        /// <response code="200">returns the order info</response>
+        /// <response code="404">if the order does not exist</response>
+        [HttpGet("order/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult GetOrderById(int id)
+        {
+            var order = _repo.GetOrderById(id);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(_mapper.Map<OrderReadDto>(order));
         }
 
         /// <summary>
