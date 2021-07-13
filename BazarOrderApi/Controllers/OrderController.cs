@@ -11,6 +11,7 @@ using BazarOrderApi.Data;
 using BazarOrderApi.Dto;
 using BazarOrderApi.Models;
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BazarOrderApi.Controllers
@@ -28,7 +29,32 @@ namespace BazarOrderApi.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// create an order for a book
+        /// </summary>
+        /// <remarks>
+        /// Sample Request:
+        ///
+        ///     POST /order/1
+        ///     {
+        ///         "id": 1,
+        ///         "bookId": 1,
+        ///         "time": "2021-07-13 00:00:00.00"
+        ///     }
+        /// </remarks>
+        /// <param name="id"></param>
+        /// <returns>an order with the book id and a timestamp</returns>
+        /// <response code="200">return the order object</response>
+        /// <response code="400">
+        /// if there is an error in the request either to this endpoint or to the catalog endpoint
+        /// </response>
+        /// <response code="404">
+        /// if the book specified by the id does not exist or if the book is out of stock
+        /// </response>
         [HttpPost("/order/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> OrderBook(int id)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:5000/book/" + id);
