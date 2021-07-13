@@ -6,4 +6,4 @@ export ASPNETCORE_Kestrel__Certificates__Default__Path="/home/vagrant/app/publis
 
 # shellcheck disable=SC2164
 cd /home/vagrant/app/publish
-dotnet "/home/vagrant/app/publish/BazarOrderApi.dll"
+dotnet "/home/vagrant/app/publish/BazarOrderApi.dll" &
