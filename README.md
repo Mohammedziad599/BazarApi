@@ -16,13 +16,13 @@ to consume the api endpoints.
 - [Docker Compose](#docker-compose "Docker Compose Guide")
 
 # How To Run
-there is two methods to Run the Project the first is using **Vagrant** and 
-the second is using **Docker-compose**
+there is two methods to Run the Project the first is using **[Vagrant](#Vagrant "Vagrant Guide")** and 
+the second is using **[Docker Compose](#docker-compose "Docker Compose Guide")**
 
 ## Vagrant
-[vagrant](https://www.vagrantup.com/ "Vagrant Home Page") is a project that
+**[vagrant](https://www.vagrantup.com/ "Vagrant Home Page")** is a project that
 automate vm creation using a virtual machine host like **Virtual Box** or 
-**VMware** to make deploying virtual machines easy.
+**VMware** to make deploying or creating virtual machines much easier.
 
 we have used vagrant to automate the creation of the vm's and it's configuration
 the whole project can be run using one command:
@@ -50,23 +50,23 @@ we can ssh to inside the vm using
 vagrant ssh <vm-name> # replace <vm-name> with either "order" or "catalog"
 ```
 
-for a reference on the Vagrantfile on the root folder of this project 
+For a reference on the Vagrantfile on the root folder of this project 
 please visit [Vagrant Docs](https://www.vagrantup.com/docs "Vagrant Documentation").
 
 ### Vagrant Installation 
-the project currently only support vagrant for Ubuntu/Debian, CentOS/RHEL & Fedora,
+The project currently only support vagrant for Ubuntu/Debian, CentOS/RHEL & Fedora,
 so there is a script file inside the `Vagrant/` folder that automate the installation
-of Vagrant, but Vagrant needs a vm manager to work with and the most supported manager 
-is **Virtual Box**, so you will need to install Virtual Box.
+of Vagrant one thing to add that the scripts does not work inside wsl because git will add
+`\r\n` instead of the `\n` in linux which makes every command fail
+, after successfully installing Vagrant you will need a vm manager that will work with vagrant to create the vm's
+and the most supported manager is **Virtual Box**, so you will need to install Virtual Box from the official site.
 
-NOTE: Vagrant in this project has been tested on linux so it's suppose to work With any
-linux distro as long as the dependency of vagrant is installed.
+NOTE: Vagrant in this project has been tested on linux so it's suppose to work with any
+linux distro as long as the dependency of vagrant is installed after some testing on a 
+windows environment did not manage to get Vagrant to work on windows, so there will be 
+a folder with the images of the vm configuration for each vm in the `Vagrant/` folder.
 
 ## Docker-compose
-
-NOTE: Currently not working because the docker-compose.yaml need to be
-updated to support giving each container an ip address as we have done in
-the Vagrantfile.
 
 Docker compose is a tool that helps with making networking between the
 containers much easier, and docker-compose uses the yaml files
@@ -75,18 +75,33 @@ as a configuration for more details about the syntax visit the compose file [Doc
 The project uses the docker containers to build the
 project each project has it's own Dockerfile that will
 build and publish the api on http and https, but the https
-still need the certificate file to work
+still need the certificate file to work.
+
+The services in the docker-compose will get assigned a ip address by
+the docker daemon so either you can get what is the ip of the service
+using the docker command line to connect to the dotnet service inside the
+container or you can use the ports `5000,5001` on your localhost to connect to
+the catalog, and the ports `6000,6001` for the order api.
+
+To make api identify that it is inside a docker container 
+an environment variable need to be set to `true` to make the correct changes
+to the uri of the catalog server which will be equal to `192.168.50.100` for 
+the vm, and equal to a hostname `catalog` in the docker variance.
 
 If you want to run the whole project you can just run the following command
 in shell:
+
 ```bash
 docker-compose up 
 ```
-Or if you wish to run the project in the background
+
+or if you wish to run the project in the background
+
 ```bash
 docker-compose up -d
 ```
-If you have used `docker-compose up` and then to totally stop t
+
+If you have used `docker-compose up` and then to totally stop the
 project you need to hit `Ctrl+C` and then you will need
 to run `docker-compose down` to remove the containers left on your
 device, or you can leave them for a faster startup in the next run.
