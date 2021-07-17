@@ -4,6 +4,11 @@ using BazarCatalogApi.Models;
 
 namespace BazarCatalogApi.Data
 {
+    /// <summary>
+    ///     This interface has the abstract method that the Catalog Repository Needs
+    ///     Note That this is Built To Handle all of our Connecting to the Database
+    ///     this design patter called the repository pattern.
+    /// </summary>
     public interface ICatalogRepo
     {
         IEnumerable<Book> GetAllBooks();

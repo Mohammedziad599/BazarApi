@@ -8,6 +8,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BazarCatalogApi.Data
 {
+    /// <summary>
+    ///     this is the real implementation of the ICatalogRepo
+    ///     this uses the CatalogContext which is a DbContext to connect to the database
+    ///     and then implement the Abstraction, also this Class will be used in the
+    ///     Dependency Injection System to be injected to the any class that need the
+    ///     implementation of the ICatalogRepo.
+    /// </summary>
     public class SqlCatalogRepo : ICatalogRepo
     {
         private readonly CatalogContext _context;
@@ -52,25 +59,19 @@ namespace BazarCatalogApi.Data
         {
             var rowCount = _context.Database.ExecuteSqlInterpolated(
                 $"UPDATE Books SET Quantity= Quantity - 1 WHERE Id={id} and Quantity > 0");
-            if (rowCount == 0)
-            {
-                throw new InvalidOperationException($"Book with id={id} is out of stock.");
-            }
+            if (rowCount == 0) throw new InvalidOperationException($"Book with id={id} is out of stock.");
         }
 
         public void IncreaseBookQuantity(int id)
         {
             var rowCount = _context.Database.ExecuteSqlInterpolated(
                 $"UPDATE Books SET Quantity = Quantity + 1 WHERE Id={id}");
-            if (rowCount == 0)
-            {
-                throw new InvalidOperationException($"Book with id={id} is out of stock.");
-            }
+            if (rowCount == 0) throw new InvalidOperationException($"Book with id={id} is out of stock.");
         }
 
         public bool SaveChanges()
         {
-            return (_context.SaveChanges() >= 0);
+            return _context.SaveChanges() >= 0;
         }
     }
 }

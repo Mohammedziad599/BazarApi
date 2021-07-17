@@ -17,12 +17,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BazarOrderApi.Controllers
 {
+    /// <summary>
+    ///     This Controller Handle Api Requests for the Order Api.
+    /// </summary>
+    [Produces("application/json")]
+    [Route("/purchase")]
+    [ApiController]
     public class OrderController : ControllerBase
     {
         private readonly IHttpClientFactory _clientFactory;
-        private readonly IOrderRepo _repo;
         private readonly IMapper _mapper;
-        private bool InDocker { get; set; }
+        private readonly IOrderRepo _repo;
 
         public OrderController(IHttpClientFactory clientFactory, IOrderRepo repo, IMapper mapper)
         {
@@ -32,82 +37,88 @@ namespace BazarOrderApi.Controllers
             InDocker = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
         }
 
+        private bool InDocker { get; }
+
         /// <summary>
-        /// return all the orders stored.
+        ///     return all the orders stored.
         /// </summary>
         /// <remarks>
-        /// Sample request:
-        ///
-        ///     GET /order/
-        /// 
+        ///     Sample request:
+        ///     GET /purchase/list
+        ///     Output:
+        ///     [
+        ///     {
+        ///     "id": 1,
+        ///     "bookId": 1,
+        ///     "time": "2021-07-13 00:00:00.00"
+        ///     }
+        ///     ]
         /// </remarks>
         /// <returns>all the orders as a json array</returns>
         /// <response code="200">success orders as json array</response>
         /// <response code="404">if there is no orders</response>
-        [HttpGet("order")]
+        [HttpGet("list")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetAllOrders()
         {
             var orders = _repo.GetAllOrders();
-            if (orders == null)
-            {
-                return NotFound();
-            }
+            if (orders == null) return NotFound();
 
             return Ok(_mapper.Map<IEnumerable<OrderReadDto>>(orders));
         }
 
         /// <summary>
-        /// returns a specific order.
+        ///     returns a specific order.
         /// </summary>
         /// <remarks>
-        /// Sample request:
-        ///
-        ///     GET /order/1
-        /// 
+        ///     Sample request:
+        ///     GET /purchase/1
+        ///     Output:
+        ///     {
+        ///     "id": 1,
+        ///     "bookId": 1,
+        ///     "time": "2021-07-13 00:00:00.00"
+        ///     }
         /// </remarks>
         /// <param name="id"> the id of the order starting from 1</param>
         /// <returns>order info</returns>
         /// <response code="200">returns the order info</response>
         /// <response code="404">if the order does not exist</response>
-        [HttpGet("order/{id}")]
+        [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetOrderById(int id)
         {
             var order = _repo.GetOrderById(id);
-            if (order == null)
-            {
-                return NotFound();
-            }
+            if (order == null) return NotFound();
 
             return Ok(_mapper.Map<OrderReadDto>(order));
         }
 
         /// <summary>
-        /// create an order for a book
+        ///     create an order for a book
         /// </summary>
         /// <remarks>
-        /// Sample Request:
-        ///
-        ///     POST /order/1
+        ///     Sample Request:
+        ///     POST /purchase/1
+        ///     Output:
         ///     {
-        ///         "id": 1,
-        ///         "bookId": 1,
-        ///         "time": "2021-07-13 00:00:00.00"
+        ///     "id": 1,
+        ///     "bookId": 1,
+        ///     "time": "2021-07-13 00:00:00.00"
         ///     }
         /// </remarks>
         /// <param name="id"></param>
         /// <returns>an order with the book id and a timestamp</returns>
         /// <response code="200">return the order object</response>
         /// <response code="400">
-        /// if there is an error in the request either to this endpoint or to the catalog endpoint
+        ///     if there is an error in the request either to this endpoint or to the catalog endpoint
         /// </response>
         /// <response code="404">
-        /// if the book specified by the id does not exist or if the book is out of stock
+        ///     if the book specified by the id does not exist or if the book is out of stock
         /// </response>
-        [HttpPost("/order/{id}")]
+        [HttpPost("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -146,11 +157,9 @@ namespace BazarOrderApi.Controllers
                     }
 
                     if (updateResponse.StatusCode == HttpStatusCode.BadRequest)
-                    {
                         return Problem("Book is out of Stock",
                             $"http://localhost:5000/book/{id}",
                             404, "Out of Stock Error");
-                    }
                 }
                 else
                 {
@@ -170,7 +179,7 @@ namespace BazarOrderApi.Controllers
                 return BadRequest(response.Content);
             }
 
-            return BadRequest();
+            return BadRequest("Something Wrong Happen Please Check the Request and try Again.");
         }
     }
 }

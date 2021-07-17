@@ -1,9 +1,13 @@
+using System;
 using System.Collections.Generic;
 
 using BazarCatalogApi.Models;
 
 namespace BazarCatalogApi.Data
 {
+    /// <summary>
+    ///     This is a Mock Repository used in the first testing of the Api.
+    /// </summary>
     public class MockCatalogRepo : ICatalogRepo
     {
         public IEnumerable<Book> GetAllBooks()
@@ -26,7 +30,7 @@ namespace BazarCatalogApi.Data
         public IEnumerable<Book> SearchByTopic(string topic)
         {
             var books = new List<Book>();
-            books.Add(new()
+            books.Add(new Book()
             {
                 Id = 0,
                 Name = "Distributed OS",
@@ -34,7 +38,7 @@ namespace BazarCatalogApi.Data
                 Quantity = 20,
                 Price = 60.0
             });
-            books.Add(new()
+            books.Add(new Book()
             {
                 Id = 0,
                 Name = "Distributed OS",
@@ -42,7 +46,7 @@ namespace BazarCatalogApi.Data
                 Quantity = 20,
                 Price = 60.0
             });
-            books.Add(new()
+            books.Add(new Book()
             {
                 Id = 0,
                 Name = "Distributed OS",
@@ -50,7 +54,7 @@ namespace BazarCatalogApi.Data
                 Quantity = 20,
                 Price = 60.0
             });
-            books.Add(new()
+            books.Add(new Book()
             {
                 Id = 0,
                 Name = "Distributed OS",
@@ -58,7 +62,7 @@ namespace BazarCatalogApi.Data
                 Quantity = 20,
                 Price = 60.0
             });
-            books.Add(new()
+            books.Add(new Book()
             {
                 Id = 0,
                 Name = "Distributed OS",
@@ -72,7 +76,7 @@ namespace BazarCatalogApi.Data
         public IEnumerable<Book> SearchByName(string name)
         {
             var books = new List<Book>();
-            books.Add(new()
+            books.Add(new Book()
             {
                 Id = 0,
                 Name = "Distributed OS",
@@ -80,7 +84,7 @@ namespace BazarCatalogApi.Data
                 Quantity = 20,
                 Price = 60.0
             });
-            books.Add(new()
+            books.Add(new Book()
             {
                 Id = 0,
                 Name = "Distributed OS",
@@ -88,7 +92,7 @@ namespace BazarCatalogApi.Data
                 Quantity = 20,
                 Price = 60.0
             });
-            books.Add(new()
+            books.Add(new Book()
             {
                 Id = 0,
                 Name = "Distributed OS",
@@ -96,7 +100,7 @@ namespace BazarCatalogApi.Data
                 Quantity = 20,
                 Price = 60.0
             });
-            books.Add(new()
+            books.Add(new Book()
             {
                 Id = 0,
                 Name = "Distributed OS",
@@ -104,7 +108,7 @@ namespace BazarCatalogApi.Data
                 Quantity = 20,
                 Price = 60.0
             });
-            books.Add(new()
+            books.Add(new Book()
             {
                 Id = 0,
                 Name = "Distributed OS",
@@ -121,12 +125,12 @@ namespace BazarCatalogApi.Data
 
         public void DecreaseBookQuantity(int id)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public void IncreaseBookQuantity(int id)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public bool SaveChanges()
