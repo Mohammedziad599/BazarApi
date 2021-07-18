@@ -67,7 +67,7 @@ namespace BazarOrderApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetAllOrders()
         {
-            _logger.LogInformation($"{DateTime.Now} -- GET /purchase/ Requested from {Request.Host.Host}");
+            _logger.LogInformation($"{DateTime.Now} -- GET /purchase/list Requested from {Request.Host.Host}");
 
             var orders = _repo.GetAllOrders();
             if (orders == null)
