@@ -3,6 +3,8 @@
 order api uses the MVC ( Model View Controller ) pattern to implement the API Functionality, but the View of this
 pattern is not used because this will only returns json data.
 
+To see how this api produces log see {RootFolder}/.log/Order
+
 ## Api Architecture
 
 The api has been developed using MVC pattern and using the repository pattern for abstracting the database operation
