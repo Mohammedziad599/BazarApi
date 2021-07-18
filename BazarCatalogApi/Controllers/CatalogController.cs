@@ -1,15 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 
 using AutoMapper;
 
 using BazarCatalogApi.Data;
 using BazarCatalogApi.Dtos;
+using BazarCatalogApi.Models;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace BazarCatalogApi.Controllers
 {
@@ -21,13 +24,15 @@ namespace BazarCatalogApi.Controllers
     [ApiController]
     public class CatalogController : ControllerBase
     {
+        private readonly ILogger _logger;
         private readonly IMapper _mapper;
         private readonly ICatalogRepo _repository;
 
-        public CatalogController(ICatalogRepo repository, IMapper mapper)
+        public CatalogController(ICatalogRepo repository, IMapper mapper, ILogger<CatalogContext> logger)
         {
             _repository = repository;
             _mapper = mapper;
+            _logger = logger;
         }
 
         /// <summary>
@@ -45,9 +50,18 @@ namespace BazarCatalogApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetAllBooks()
         {
+            _logger.LogInformation($"{DateTime.Now} -- GET /book/ Requested from {Request.Host.Host}");
+
             var books = _repository.GetAllBooks();
 
-            if (!books.Any()) return NotFound();
+            var enumerable = books as Book[] ?? books.ToArray();
+            if (!enumerable.Any())
+            {
+                _logger.LogError("There is no book in the database");
+                return NotFound();
+            }
+
+            _logger.LogInformation($"{DateTime.Now} -- Result = {JsonSerializer.Serialize(enumerable)}");
 
             return Ok(_mapper.Map<IEnumerable<BookReadDto>>(books));
         }
@@ -70,8 +84,16 @@ namespace BazarCatalogApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetBookById(int id)
         {
+            _logger.LogInformation($"{DateTime.Now} -- GET /book/{id} Requested from {Request.Host.Host}");
+
             var book = _repository.GetBookById(id);
-            if (book == null) return NotFound();
+            if (book == null)
+            {
+                _logger.LogError($"{DateTime.Now} -- Book with id={id} Not Found");
+                return NotFound();
+            }
+
+            _logger.LogInformation($"{DateTime.Now} -- Result = {JsonSerializer.Serialize(book)}");
 
             return Ok(_mapper.Map<BookReadDto>(book));
         }
@@ -94,8 +116,16 @@ namespace BazarCatalogApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult SearchForBookByTopic(string topic)
         {
+            _logger.LogInformation($"{DateTime.Now} -- GET /book/topic/search/{topic} From {Request.Host.Host}");
+
             var books = _repository.SearchByTopic(topic);
-            if (books == null) return NotFound();
+            if (books == null)
+            {
+                _logger.LogError($"{DateTime.Now} -- No Book found with topic containing \"{topic}\"");
+                return NotFound();
+            }
+
+            _logger.LogInformation($"{DateTime.Now} -- Result = {JsonSerializer.Serialize(books)}");
 
             return Ok(_mapper.Map<IEnumerable<BookReadDto>>(books));
         }
@@ -118,8 +148,16 @@ namespace BazarCatalogApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult SearchForBookByName(string name)
         {
+            _logger.LogInformation($"{DateTime.Now} -- GET /book/name/search/{name} From {Request.Host.Host}");
+
             var books = _repository.SearchByName(name);
-            if (books == null) return NotFound();
+            if (books == null)
+            {
+                _logger.LogError($"{DateTime.Now} -- No Book found with name containing \"{name}\"");
+                return NotFound();
+            }
+
+            _logger.LogInformation($"{DateTime.Now} -- Result = {JsonSerializer.Serialize(books)}");
 
             return Ok(_mapper.Map<IEnumerable<BookReadDto>>(books));
         }
@@ -153,16 +191,28 @@ namespace BazarCatalogApi.Controllers
         [ProducesResponseType(StatusCodes.Status405MethodNotAllowed)]
         public IActionResult UpdateBookPartially(int id, JsonPatchDocument<BookUpdateDto> patchDocument)
         {
+            _logger.LogInformation($"{DateTime.Now} -- PATCH /book/update/{id} From {Request.Host.Host}");
+
             var bookFromRepo = _repository.GetBookById(id);
-            if (bookFromRepo == null) return NotFound();
+            if (bookFromRepo == null)
+            {
+                _logger.LogError($"{DateTime.Now} -- Book with id={id} Not Found");
+                return NotFound();
+            }
 
             var bookToPatch = _mapper.Map<BookUpdateDto>(bookFromRepo);
             patchDocument.ApplyTo(bookToPatch, ModelState);
-            if (!TryValidateModel(bookToPatch)) return ValidationProblem(ModelState);
+            if (!TryValidateModel(bookToPatch))
+            {
+                _logger.LogError($"{DateTime.Now} -- There is an error in the Received Json Patch");
+                return ValidationProblem(ModelState);
+            }
 
             _mapper.Map(bookToPatch, bookFromRepo);
             _repository.UpdateBook(bookFromRepo);
             _repository.SaveChanges();
+
+            _logger.LogInformation($"{DateTime.Now} -- Result = {{}}");
 
             return NoContent();
         }
@@ -188,6 +238,8 @@ namespace BazarCatalogApi.Controllers
         [ProducesResponseType(StatusCodes.Status405MethodNotAllowed)]
         public IActionResult DecrementBookQuantity(int id)
         {
+            _logger.LogInformation($"{DateTime.Now} -- POST /book/quantity/dec/{id} From {Request.Host.Host}");
+
             if (_repository.GetBookById(id) == null) return NotFound();
 
             try
@@ -196,10 +248,14 @@ namespace BazarCatalogApi.Controllers
             }
             catch (InvalidOperationException)
             {
+                _logger.LogError($"{DateTime.Now} -- Item {id} is out of Stock");
+
                 return Problem("Item is Out of Stock",
                     $"/book/{id}",
                     400, $"Cannot Purchase Book with id={id}");
             }
+
+            _logger.LogInformation($"{DateTime.Now} -- Result = {{}}");
 
             return NoContent();
         }
@@ -225,9 +281,13 @@ namespace BazarCatalogApi.Controllers
         [ProducesResponseType(StatusCodes.Status405MethodNotAllowed)]
         public IActionResult IncrementBookQuantity(int id)
         {
+            _logger.LogInformation($"{DateTime.Now} -- POST /book/quantity/inc/{id} From {Request.Host.Host}");
+
             if (_repository.GetBookById(id) == null) return NotFound();
 
             _repository.IncreaseBookQuantity(id);
+
+            _logger.LogInformation($"{DateTime.Now} -- Result = {{}}");
 
             return NoContent();
         }
