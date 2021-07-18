@@ -24,11 +24,11 @@ namespace BazarCatalogApi.Controllers
     [ApiController]
     public class CatalogController : ControllerBase
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<CatalogController> _logger;
         private readonly IMapper _mapper;
         private readonly ICatalogRepo _repository;
 
-        public CatalogController(ICatalogRepo repository, IMapper mapper, ILogger<CatalogContext> logger)
+        public CatalogController(ICatalogRepo repository, IMapper mapper, ILogger<CatalogController> logger)
         {
             _repository = repository;
             _mapper = mapper;
