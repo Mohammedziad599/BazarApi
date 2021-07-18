@@ -67,7 +67,7 @@ namespace BazarOrderApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetAllOrders()
         {
-            _logger.LogInformation($"{DateTime.Now} -- GET /order/ Requested from {Request.Host.Host}");
+            _logger.LogInformation($"{DateTime.Now} -- GET /purchase/ Requested from {Request.Host.Host}");
 
             var orders = _repo.GetAllOrders();
             if (orders == null)
@@ -94,7 +94,7 @@ namespace BazarOrderApi.Controllers
         ///     "time": "2021-07-13 00:00:00.00"
         ///     }
         /// </remarks>
-        /// <param name="id"> the id of the order starting from 1</param>
+        /// <param name="id"> the id of the purchase order starting from 1</param>
         /// <returns>order info</returns>
         /// <response code="200">returns the order info</response>
         /// <response code="404">if the order does not exist</response>
@@ -103,7 +103,7 @@ namespace BazarOrderApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetOrderById(int id)
         {
-            _logger.LogInformation($"{DateTime.Now} -- GET /order/{id} Requested from {Request.Host.Host}");
+            _logger.LogInformation($"{DateTime.Now} -- GET /purchase/{id} Requested from {Request.Host.Host}");
 
             var order = _repo.GetOrderById(id);
             if (order == null)
@@ -130,7 +130,7 @@ namespace BazarOrderApi.Controllers
         ///     "time": "2021-07-13 00:00:00.00"
         ///     }
         /// </remarks>
-        /// <param name="id"></param>
+        /// <param name="id">the book id that you want to purchase</param>
         /// <returns>an order with the book id and a timestamp</returns>
         /// <response code="200">return the order object</response>
         /// <response code="400">
@@ -145,7 +145,7 @@ namespace BazarOrderApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> OrderBook(int id)
         {
-            _logger.LogInformation($"{DateTime.Now} -- POST /order/{id} Requested From {Request.Host.Host}");
+            _logger.LogInformation($"{DateTime.Now} -- POST /purchase/{id} Requested From {Request.Host.Host}");
 
             var request = new HttpRequestMessage(HttpMethod.Get,
                 $"http://{(InDocker ? "catalog" : "192.168.50.100")}/book/{id}");
