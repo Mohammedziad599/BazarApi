@@ -45,7 +45,7 @@ tr:nth-child(even) {
 #gob {
     height: 26px;
     width: 66px;
-    margin-top: 45px;
+    /*margin-top: 45px;*/
     margin-left: 50px;
     border: none;
     color: #cfd3d3;
@@ -98,6 +98,7 @@ tr:nth-child(even) {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
+        align-items: center;
     }
 
     .nav1 {
@@ -106,7 +107,7 @@ tr:nth-child(even) {
         margin-left: 1em;
         margin-bottom: 1em;
         margin-top: 1em;
-
+        align-items: center;
     }
 
     .nav1 input {

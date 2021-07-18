@@ -6,9 +6,31 @@ let clickall = false;
 let idbook;
 let buylist = [];
 
+function getDeployment(server) {
+    let element = document.getElementsByName('deployment_location');
+    for (i = 0; i < element.length; i++) {
+        if (element[i].checked) {
+            if (element[i].value == "Docker") {
+                if (server == "order") {
+                    return "localhost:6001";
+                } else {
+                    return "localhost:5000";
+                }
+            } else {
+                if (server == "order") {
+                    return "192.168.50.101";
+                } else {
+                    return "192.168.50.100";
+                }
+            }
+        }
+    }
+}
+
 function info(e) {
+    let serverPath = getDeployment("catalog");
     if (e.id == "b11") {
-        axios.get("http://localhost:5000/book/1").then(response => {
+        axios.get("http://" + serverPath + "/book/1").then(response => {
             const data = response.data;
             console.log(data);
             bname = data.name;
@@ -19,7 +41,7 @@ function info(e) {
         });
 
     } else if (e.id == "b22") {
-        axios.get("http://localhost:5000/book/2").then(response => {
+        axios.get("http://" + serverPath + "/book/2").then(response => {
             const data = response.data;
             console.log(data);
             bname = data.name;
@@ -29,7 +51,7 @@ function info(e) {
             showinfo();
         });
     } else if (e.id == "b33") {
-        axios.get("http://localhost:5000/book/3").then(response => {
+        axios.get("http://" + serverPath + "/book/3").then(response => {
             const data = response.data;
             console.log(data);
             bname = data.name;
@@ -39,7 +61,7 @@ function info(e) {
             showinfo();
         });
     } else if (e.id == "b44") {
-        axios.get("http://localhost:5000/book/4").then(response => {
+        axios.get("http://" + serverPath + "/book/4").then(response => {
             const data = response.data;
             console.log(data);
             bname = data.name;
@@ -54,7 +76,6 @@ function info(e) {
 function showinfo() {
     let tbodyRef = document.getElementById('myTable');
     if (clickall) {
-        debugger;
         for (let j = 2; j < 5; j++) {
             tbodyRef.deleteRow(2);
         }
@@ -68,7 +89,8 @@ function showinfo() {
 
 function infoall() {
     clickall = true;
-    axios.get("http://localhost:5000/book").then(response => {
+    let serverPath = getDeployment("catalog");
+    axios.get("http://" + serverPath + "/book").then(response => {
         const data = response.data;
         console.log(data);
         let tbodyRef = document.getElementById('myTable');
@@ -93,24 +115,20 @@ function infoall() {
 }
 
 function Search() {
-    debugger;
+
     let booktopic = document.getElementById("myInput").value;
 
     let modal1 = document.getElementById("myModal");
     modal1.style.displays = "block";
 
-    if (booktopic == "distributed systems" || booktopic == "undergraduate school") {
-        axios.get("https://localhost:5001/book/search/" + booktopic).then(response => {
-            const data = response.data;
-            console.log(data);
-            document.getElementById("p1").innerHTML = "The Books in topic " + booktopic + " are : <br> &nbsp 1- " + data[0].name + "<br> &nbsp 2- " + data[1].name;
-        });
+    let serverPath = getDeployment("catalog");
+    axios.get("http://" + serverPath + "/book/topic/search/" + booktopic).then(response => {
+        const data = response.data;
+        console.log(data);
+        document.getElementById("p1").innerHTML = "The Books in topic " + booktopic + " are : <br> &nbsp 1- " + data[0].name + "<br> &nbsp 2- " + data[1].name;
+    });
 
-        modal1.style.display = 'block';
-
-    } else {
-        alert("please check the topic");
-    }
+    modal1.style.display = 'block';
 }
 
 function modalgo() {
@@ -119,7 +137,8 @@ function modalgo() {
 }
 
 function getbookn() {
-    axios.get("http://localhost:5000/book").then(response => {
+    let serverPath = getDeployment("catalog");
+    axios.get("http://" + serverPath + "/book").then(response => {
         const data = response.data;
         document.getElementById("n1").innerText = data[0].name;
         document.getElementById("n2").innerText = data[1].name;
@@ -131,7 +150,6 @@ function getbookn() {
 function buy(e) {
     if (e.id == "b1") {
         idbook = 1;
-
     } else if (e.id == "b2") {
         idbook = 2;
     } else if (e.id == "b3") {
@@ -139,16 +157,23 @@ function buy(e) {
     } else if (e.id == "b4") {
         idbook = 4;
     }
-    alert("the purchase is done ");
-    axios.post("https://localhost:5003/order/" + idbook).then(response => {
+    // alert("the purchase is done ");
+    let serverPath = getDeployment("order");
+    axios.post("https://" + serverPath + "/purchase/" + idbook, {}).then(response => {
         const data = response.data;
+        if (response.status === 200) {
+            alert("the purchase is done you're purchase id=" + data.id);
+        } else {
+            alert("Error in the Purchase");
+        }
     });
 }
 
 function listbook() {
     let text = "The Books sold are :";
     let modal2 = document.getElementById("myModal");
-    axios.get("https://localhost:5003/order").then(response => {
+    let serverPath = getDeployment("order");
+    axios.get("https://" + serverPath + "/purchase/list").then(response => {
         const data = response.data;
         for (let i = 0; i < data.length; i++) {
             let str = data[i].time;
