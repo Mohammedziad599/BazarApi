@@ -3,6 +3,7 @@ let btopic;
 let bquantity;
 let bprice;
 let clickall = false;
+let full = false;
 let idbook;
 let buylist = [];
 
@@ -85,11 +86,19 @@ function showinfo() {
     document.getElementById("bt").innerText = btopic;
     document.getElementById("bq").innerText = bquantity;
     document.getElementById("bp").innerText = bprice;
+    full = false;
 }
 
 function infoall() {
     clickall = true;
     let serverPath = getDeployment("catalog");
+    let tbodyRef = document.getElementById('myTable');
+    if(full){
+        for (let j = 2; j < 5; j++) {
+            tbodyRef.deleteRow(2);
+        }
+        full = false;
+    }
     axios.get("http://" + serverPath + "/book").then(response => {
         const data = response.data;
         console.log(data);
@@ -112,6 +121,7 @@ function infoall() {
 
 
     });
+    full = true;
 }
 
 function Search() {
