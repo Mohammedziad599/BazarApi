@@ -45,7 +45,7 @@ namespace BazarCatalogApi.Controllers
         /// <returns>all the books as a json array</returns>
         /// <response code="200">success books as json array</response>
         /// <response code="404">if there is no books in the store</response>
-        [HttpGet("/book/")]
+        [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetAllBooks()
