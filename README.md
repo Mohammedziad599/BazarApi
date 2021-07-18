@@ -50,6 +50,9 @@ we can ssh to inside the vm using
 vagrant ssh <vm-name> # replace <vm-name> with either "order" or "catalog"
 ```
 
+The project in vagrant has three ip's `192.168.50.100` for the Catalog api, `192.168.50.101` for the Order api,
+`192.168.50.102` for the apache server running the ui code.
+
 For a reference on the Vagrantfile on the root folder of this project 
 please visit [Vagrant Docs](https://www.vagrantup.com/docs "Vagrant Documentation").
 
@@ -81,7 +84,7 @@ The services in the docker-compose will get assigned a ip address by
 the docker daemon so either you can get what is the ip of the service
 using the docker command line to connect to the dotnet service inside the
 container or you can use the ports `5000,5001` on your localhost to connect to
-the catalog, and the ports `6000,6001` for the order api.
+the catalog, and the ports `6000,6001` for the order api, also `4000` for the ui Code.
 
 To make api identify that it is inside a docker container 
 an environment variable need to be set to `true` to make the correct changes
