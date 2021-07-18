@@ -33,6 +33,12 @@ services:
       - network
     depends_on:
       - catalog
+  httpd:
+    image: httpd:2
+    ports:
+      - "4000:80"
+    volumes:
+      - ./UI/:/usr/local/apache2/htdocs
 networks:
   network:
     driver: bridge
