@@ -1,0 +1,5 @@
+order_1    | info: BazarOrderApi.Controllers.OrderController[0]
+order_1    |       07/18/2021 13:39:26 -- GET /purchase/list Requested from localhost
+order_1    | info: BazarOrderApi.Controllers.OrderController[0]
+order_1    |       07/18/2021 13:39:27 -- Result = [{"Id":1,"BookId":2,"Time":"2021-07-08T01:10:08.1468068"},{"Id":2,"BookId":2,"Time":"2021-07-08T01:10:26.0740454"},{"Id":3,"BookId":1,"Time":"2021-07-08T11:38:40.2611329"},{"Id":4,"BookId":1,"Time":"2021-07-18T13:15:43.9973122"}]
+

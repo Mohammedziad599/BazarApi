@@ -1,0 +1,5 @@
+catalog_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_1  |       07/18/2021 13:19:49 -- GET /book/1 Requested from localhost
+catalog_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_1  |       07/18/2021 13:19:49 -- Result = {"Id":1,"Name":"How to get a good grade in DOS in 40 minutes a day","Topic":"distributed systems","Quantity":96,"Price":60}
+

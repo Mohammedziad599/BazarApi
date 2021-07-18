@@ -1,0 +1,12 @@
+catalog_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_1  |       07/18/2021 13:28:57 -- POST /book/quantity/dec/1 From localhost
+catalog_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_1  |       07/18/2021 13:28:57 -- Result = {}
+
+//this to verify that the decrement happend NOTE: the previous value was 100
+
+catalog_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_1  |       07/18/2021 13:29:03 -- GET /book/1 Requested from localhost
+catalog_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_1  |       07/18/2021 13:29:03 -- Result = {"Id":1,"Name":"How to get a good grade in DOS in 40 minutes a day","Topic":"distributed systems","Quantity":99,"Price":60}
+

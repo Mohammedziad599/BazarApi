@@ -1,0 +1,5 @@
+catalog_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_1  |       07/18/2021 13:23:24 -- GET /book/name/search/for From localhost
+catalog_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_1  |       07/18/2021 13:23:25 -- Result = [{"Id":2,"Name":"RPCs for Noobs","Topic":"distributed systems","Quantity":198,"Price":40},{"Id":4,"Name":"Cooking for the Impatient Undergrad","Topic":"undergraduate school","Quantity":90,"Price":50.36}]
+

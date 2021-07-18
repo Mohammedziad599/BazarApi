@@ -1,0 +1,5 @@
+catalog_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_1  |       07/18/2021 13:19:09 -- GET /book/ Requested from localhost
+catalog_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_1  |       07/18/2021 13:19:10 -- Result = [{"Id":1,"Name":"How to get a good grade in DOS in 40 minutes a day","Topic":"distributed systems","Quantity":96,"Price":60},{"Id":2,"Name":"RPCs for Noobs","Topic":"distributed systems","Quantity":198,"Price":40},{"Id":3,"Name":"Xen and the Art of Surviving Undergraduate School","Topic":"undergraduate school","Quantity":30,"Price":39.99},{"Id":4,"Name":"Cooking for the Impatient Undergrad","Topic":"undergraduate school","Quantity":90,"Price":50.36}]
+

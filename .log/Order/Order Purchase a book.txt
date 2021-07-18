@@ -1,0 +1,62 @@
+/*
+the Book that we will purchase
+this it's info
+{
+    "id": 1,
+    "name": "How to get a good grade in DOS in 40 minutes a day",
+    "topic": "distributed systems",
+    "quantity": 100,
+    "price": 60.0
+}
+*/
+//this is the server log in after sending a purchase request.
+order_1    | info: BazarOrderApi.Controllers.OrderController[0]
+order_1    |       07/18/2021 13:41:27 -- POST /purchase/1 Requested From localhost
+order_1    | info: BazarOrderApi.Controllers.OrderController[0]
+order_1    |       07/18/2021 13:41:27 -- Sending Request to Catalog Server /book/1
+order_1    | info: System.Net.Http.HttpClient.Default.LogicalHandler[100]
+order_1    |       Start processing HTTP request GET http://catalog/book/1
+order_1    | info: System.Net.Http.HttpClient.Default.ClientHandler[100]
+order_1    |       Sending HTTP request GET http://catalog/book/1
+
+catalog_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_1  |       07/18/2021 13:41:27 -- GET /book/1 Requested from catalog
+catalog_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_1  |       07/18/2021 13:41:27 -- Result = {"Id":1,"Name":"How to get a good grade in DOS in 40 minutes a day","Topic":"distributed systems","Quantity":100,"Price":60}
+
+order_1    | info: System.Net.Http.HttpClient.Default.ClientHandler[101]
+order_1    |       Received HTTP response headers after 213.7352ms - 200
+order_1    | info: System.Net.Http.HttpClient.Default.LogicalHandler[101]
+order_1    |       End processing HTTP request after 232.0928ms - 200
+order_1    | info: BazarOrderApi.Controllers.OrderController[0]
+order_1    |       07/18/2021 13:41:27 -- Catalog Server Returned Status code 200
+order_1    | info: BazarOrderApi.Controllers.OrderController[0]
+order_1    |       07/18/2021 13:41:27 -- Sending Decrement Request to Catalog Server
+order_1    | info: System.Net.Http.HttpClient.Default.LogicalHandler[100]
+order_1    |       Start processing HTTP request POST http://catalog/book/quantity/dec/1
+order_1    | info: System.Net.Http.HttpClient.Default.ClientHandler[100]
+order_1    |       Sending HTTP request POST http://catalog/book/quantity/dec/1
+
+catalog_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_1  |       07/18/2021 13:41:27 -- POST /book/quantity/dec/1 From catalog
+catalog_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_1  |       07/18/2021 13:41:28 -- Result = {}
+
+order_1    | info: System.Net.Http.HttpClient.Default.ClientHandler[101]
+order_1    |       Received HTTP response headers after 207.2366ms - 204
+order_1    | info: System.Net.Http.HttpClient.Default.LogicalHandler[101]
+order_1    |       End processing HTTP request after 207.3949ms - 204
+order_1    | info: BazarOrderApi.Controllers.OrderController[0]
+order_1    |       07/18/2021 13:41:28 -- Decrement Succeed in the Catalog Server
+order_1    | info: BazarOrderApi.Controllers.OrderController[0]
+order_1    |       07/18/2021 13:41:28 -- Result = {"Id":5,"BookId":1,"Time":"2021-07-18T13:41:28.0081646+00:00"}
+
+/*
+{
+    "id": 1,
+    "name": "How to get a good grade in DOS in 40 minutes a day",
+    "topic": "distributed systems",
+    "quantity": 99,
+    "price": 60.0
+}
+*/
