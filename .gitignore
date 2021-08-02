@@ -52,3 +52,5 @@ obj/Debug/netcoreapp3.1/Commander.assets.cache
 *.sln.iml
 # Vagrant
 .vagrant/**
+
+.ignored/**
