@@ -1,0 +1,12 @@
+.btn-indigo {
+    background-color: var(--bs-indigo);
+    border-color: var(--bs-indigo);
+    color: white;
+    margin: 0.2rem;
+}
+
+.btn-indigo:hover {
+    background-color: var(--bs-purple);
+    border-color: var(--bs-purple);
+    color: white;
+}
