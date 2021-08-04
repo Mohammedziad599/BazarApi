@@ -1,3 +1,4 @@
+const Cache = new Map();
 function getDeployment(server) {
     let element = document.getElementsByName('deployment_location');
     for (let i = 0; i < element.length; i++) {
@@ -26,7 +27,12 @@ async function getCatalogData(bookId) {
 
 async function info(element) {
     let id = parseInt(element.getAttribute("data-id"));
+    if(Cache.get("c"+id)){
+        return Cache.get("c"+id);
+    }
     let data = await getCatalogData(id);
+    Cache.set("c"+id,data.data);
+    console.log(Cache);
     return data.data;
 }
 
@@ -74,8 +80,13 @@ function showInfo(data, isArray) {
 
 function showAll() {
     let serverPath = getDeployment("catalog");
+    if(Cache.get("c")!== undefined){
+        showInfo(Cache.get("c"), true);
+        return;
+    }
     axios.get(`http://${serverPath}/book`).then(response => {
         const data = response.data;
+        Cache.set("c",data);
         showInfo(data, true);
     });
 }
@@ -94,8 +105,13 @@ function searchInfo() {
     let serverPath = getDeployment("catalog");
     if (getSearchMethod() === "Topic") {
         let topic = document.getElementById("search").value;
+        if(Cache.get("topic/"+topic) !== undefined){
+            showInfo(Cache.get("topic/"+topic), true);
+            return;
+        }
         axios.get(`http://${serverPath}/book/topic/search/${topic}`).then(response => {
             const data = response.data;
+            Cache.set("topic/"+topic,data);
             showInfo(data, true);
         }).catch(() => {
             clearInfoTable();
@@ -103,8 +119,13 @@ function searchInfo() {
         });
     } else {
         let name = document.getElementById("search").value;
+        if(Cache.get("name/"+name) !== undefined){
+            showInfo(Cache.get("name/"+name), true);
+            return;
+        }
         axios.get(`http://${serverPath}/book/name/search/${name}`).then(response => {
             const data = response.data;
+            Cache.set("name/"+name,data);
             showInfo(data, true);
         }).catch(() => {
             clearInfoTable();
@@ -114,10 +135,17 @@ function searchInfo() {
 }
 
 function getBooks() {
+    // TODO simplify the code
+    
     let serverPath = getDeployment("catalog");
+    if(Cache.get("books") !== undefined){
+       // showInfo(Cache.get(""), true);
+        return;
+    }
     axios.get(`http://${serverPath}/book`).then(response => {
         if (response.status === 200) {
             const data = response.data;
+            Cache.set("books",data);
             const books = document.getElementById("books");
             while (books.lastElementChild) {
                 books.removeChild(books.lastElementChild);
@@ -257,11 +285,17 @@ function showOrder(data, isArray) {
 }
 
 function listOrders() {
-    let serverPath = getDeployment("order")
+    let serverPath = getDeployment("order");
+    if(Cache.get("o")!== undefined){
+        showOrder(Cache.get("o"), true);
+        return;
+    }
     axios.get("https://" + serverPath + "/purchase/list").then(response => {
         const data = response.data;
+        Cache.set("o",data);
         showOrder(data, true);
     });
+    console.log(Cache);
 }
 
 function clearInfoTable() {
