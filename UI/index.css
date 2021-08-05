@@ -2,7 +2,7 @@
     background-color: var(--bs-indigo);
     border-color: var(--bs-indigo);
     color: white;
-    margin: 0.2rem;
+    /*margin: 0.2rem;*/
 }
 
 .btn-indigo:hover {

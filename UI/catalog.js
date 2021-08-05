@@ -120,10 +120,10 @@ function showBooks(booksData) {
     for (let i = 0; i < booksData.length; i++) {
         if ((i % 2) === 0) {
             let row = document.createElement("div");
-            row.className = "row mb-2";
+            row.className = "row";
             currentRow = row;
             let column = document.createElement("div");
-            column.className = "col-lg-6 col-md-12";
+            column.className = "col-lg-6 col-md-12 mb-2 mt-2";
             let card = document.createElement("div");
             card.className = "card";
             let cardBody = document.createElement("div");
@@ -132,7 +132,7 @@ function showBooks(booksData) {
             cardHeader.className = "card-title";
             cardHeader.innerText = booksData[i].name;
             let purchaseButton = document.createElement("a");
-            purchaseButton.className = "btn btn-indigo";
+            purchaseButton.className = "btn btn-indigo m-1";
             purchaseButton.innerText = "Purchase";
             purchaseButton.onclick = function () {
                 purchase(this).then(response => {
@@ -142,7 +142,7 @@ function showBooks(booksData) {
             purchaseButton.href = "#";
             purchaseButton.setAttribute("data-id", booksData[i].id);
             let infoButton = document.createElement("a");
-            infoButton.className = "btn btn-indigo";
+            infoButton.className = "btn btn-indigo m-1";
             infoButton.innerText = "Info";
             infoButton.onclick = function () {
                 info(this).then(response => {
@@ -160,7 +160,7 @@ function showBooks(booksData) {
             books.append(row);
         } else {
             let column = document.createElement("div");
-            column.className = "col-lg-6 col-md-12";
+            column.className = "col-lg-6 col-md-12 mb-2 mt-2";
             let card = document.createElement("div");
             card.className = "card";
             let cardBody = document.createElement("div");
@@ -169,7 +169,7 @@ function showBooks(booksData) {
             cardHeader.className = "card-title";
             cardHeader.innerText = booksData[i].name;
             let purchaseButton = document.createElement("a");
-            purchaseButton.className = "btn btn-indigo";
+            purchaseButton.className = "btn btn-indigo m-1";
             purchaseButton.innerText = "Purchase";
             purchaseButton.onclick = function () {
                 purchase(this).then(response => {
@@ -179,7 +179,7 @@ function showBooks(booksData) {
             purchaseButton.href = "#";
             purchaseButton.setAttribute("data-id", booksData[i].id);
             let infoButton = document.createElement("a");
-            infoButton.className = "btn btn-indigo";
+            infoButton.className = "btn btn-indigo m-1";
             infoButton.innerText = "Info";
             infoButton.onclick = function () {
                 info(this).then(response => {
