@@ -5,11 +5,11 @@ async function getCatalogData(bookId) {
 
 async function info(element) {
     let id = parseInt(element.getAttribute("data-id"));
-    if (Cache.get("c" + id)) {
-        return Cache.get("c" + id);
+    if (Cache.get(`c${id}`)) {
+        return Cache.get(`c${id}`);
     }
     let data = await getCatalogData(id);
-    Cache.set("c" + id, data.data);
+    Cache.set(`c${id}`, data.data);
     return data.data;
 }
 
@@ -82,13 +82,13 @@ function searchInfo() {
     let serverPath = getDeployment("catalog");
     if (getSearchMethod() === "Topic") {
         let topic = document.getElementById("search").value;
-        if (Cache.get("topic/" + topic) !== undefined) {
-            showInfo(Cache.get("topic/" + topic), true);
+        if (Cache.get(`topic/${topic}`) !== undefined) {
+            showInfo(Cache.get(`topic/${topic}`), true);
             return;
         }
         axios.get(`http://${serverPath}/book/topic/search/${topic}`).then(response => {
             const data = response.data;
-            Cache.set("topic/" + topic, data);
+            Cache.set(`topic/${topic}`, data);
             showInfo(data, true);
         }).catch(() => {
             clearInfoTable();
@@ -96,13 +96,13 @@ function searchInfo() {
         });
     } else {
         let name = document.getElementById("search").value;
-        if (Cache.get("name/" + name) !== undefined) {
-            showInfo(Cache.get("name/" + name), true);
+        if (Cache.get(`name/${name}`) !== undefined) {
+            showInfo(Cache.get(`name/${name}`), true);
             return;
         }
         axios.get(`http://${serverPath}/book/name/search/${name}`).then(response => {
             const data = response.data;
-            Cache.set("name/" + name, data);
+            Cache.set(`name/${name}`, data);
             showInfo(data, true);
         }).catch(() => {
             clearInfoTable();

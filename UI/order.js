@@ -51,7 +51,7 @@ function listOrders() {
         showOrder(Cache.get("o"), true);
         return;
     }
-    axios.get("https://" + serverPath + "/purchase/list").then(response => {
+    axios.get(`https://${serverPath}/purchase/list`).then(response => {
         const data = response.data;
         Cache.set("o", data);
         showOrder(data, true);
