@@ -43,6 +43,8 @@ namespace BazarCatalogApi
             // AddCors used to add the Cors service needed because we want to
             // add the Header Allow-Control-Access-Origin to the response.
             services.AddCors();
+            // This will add the dependency injection for the httpclient for this project.
+            services.AddHttpClient();
             // This will add the DbContext for the Entity Framework Core and we
             // are using Sqlite as our persistant data storage.
             services.AddDbContext<CatalogContext>(options =>
