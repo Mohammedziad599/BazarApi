@@ -35,6 +35,16 @@ Vagrant.configure("2") do |config|
     order.vm.provision "shell", path: "Vagrant/Dotnet Scripts/Order/dotnet-run.sh", privileged: true, run: 'always'
   end
   
+  config.vm.define "cache" do |cache|
+      cache.vm.box = "ubuntu/focal64"
+      cache.vm.network "private_network", ip: "192.168.50.102"
+      cache.vm.provision "file", source: "BazarCacheApi", destination: "$HOME/src"
+      cache.vm.provision "file", source: "BazarCacheApi.pfx", destination: "$HOME/app/publish/BazarCacheApi.pfx"
+      cache.vm.provision "shell", path: "Vagrant/Dotnet Scripts/dotnet.sh", privileged: true
+      cache.vm.provision "shell", path: "Vagrant/Dotnet Scripts/Cache/dotnet-build.sh", privileged: false
+      cache.vm.provision "shell", path: "Vagrant/Dotnet Scripts/Cache/dotnet-run.sh", privileged: true, run: 'always'
+    end
+  
   config.vm.define "ui" do |ui|
     ui.vm.box = "ubuntu/focal64"
     ui.vm.network "private_network", ip: "192.168.50.102"
