@@ -32,8 +32,6 @@ namespace BazarCatalogApi.Controllers
         private readonly IMapper _mapper;
         private readonly ICatalogRepo _repository;
 
-        private readonly bool InDocker;
-
         public CatalogController(ICatalogRepo repository, IMapper mapper, ILogger<CatalogController> logger,
             IHttpClientFactory clientFactory)
         {
@@ -44,6 +42,9 @@ namespace BazarCatalogApi.Controllers
             InDocker = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
         }
 
+        private bool InDocker { get; }
+
+        // TODO Update the Docs
         /// <summary>
         ///     return all the books stored.
         /// </summary>
