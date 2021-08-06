@@ -19,8 +19,8 @@ services:
   order:
     build: ./BazarOrderApi
     ports:
-    - "6000:80"
-    - "6001:443"
+      - "6000:80"
+      - "6001:443"
     environment:
       - ASPNETCORE_URLS=https://+;http://+
       - ASPNETCORE_Kestrel__Certificates__Default__Password=mohammed
@@ -33,6 +33,20 @@ services:
       - network
     depends_on:
       - catalog
+  cache:
+    build: ./BazarCacheApi
+    ports:
+      - 3000:80
+      - 3000:443
+    environment:
+      - ASPNETCORE_URLS=https://+;http://+
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=mohammed
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/root/.aspnet/https/BazarCacheApi.pfx
+      - DOTNET_RUNNING_IN_CONTAINER=true
+    volumes:
+      - ./BazarCacheApi.pfx:/root/.aspnet/https/BazarCacheApi.pfx
+    networks:
+      - network
   httpd:
     image: httpd:2
     ports:
