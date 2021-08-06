@@ -14,6 +14,9 @@ namespace BazarCacheApi.Models
         public string Topic { get; set; }
 
         [Required]
+        public int Quantity { get; set; }
+
+        [Required]
         public double Price { get; set; }
     }
 }
