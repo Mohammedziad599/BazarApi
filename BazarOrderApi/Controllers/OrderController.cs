@@ -32,6 +32,8 @@ namespace BazarOrderApi.Controllers
         private readonly IMapper _mapper;
         private readonly IOrderRepo _repo;
 
+        private readonly bool _useCacheInPurchase = true;
+
         public OrderController(IHttpClientFactory clientFactory, IOrderRepo repo, IMapper mapper,
             ILogger<OrderController> logger)
         {
@@ -66,7 +68,7 @@ namespace BazarOrderApi.Controllers
         [HttpGet("list")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetAllOrders()
+        public IActionResult GetAllOrders()
         {
             _logger.LogInformation($"{DateTime.Now} -- GET /purchase/list Requested from {Request.Host.Host}");
 
@@ -76,12 +78,6 @@ namespace BazarOrderApi.Controllers
                 _logger.LogError($"{DateTime.Now} -- No Order Found");
                 return NotFound();
             }
-
-            var client = _clientFactory.CreateClient();
-
-            await client.PostAsJsonAsync(
-                $"http://{(InDocker ? "cache" : "192.168.50.102")}/orders",
-                _mapper.Map<IEnumerable<OrderReadDto>>(orders));
 
             _logger.LogInformation($"{DateTime.Now} -- Result = {JsonSerializer.Serialize(orders)}");
 
@@ -108,7 +104,7 @@ namespace BazarOrderApi.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetOrderById(int id)
+        public IActionResult GetOrderById(int id)
         {
             _logger.LogInformation($"{DateTime.Now} -- GET /purchase/{id} Requested from {Request.Host.Host}");
 
@@ -118,12 +114,6 @@ namespace BazarOrderApi.Controllers
                 _logger.LogError($"{DateTime.Now} -- Order Not Found id={id}");
                 return NotFound();
             }
-
-            var client = _clientFactory.CreateClient();
-
-            await client.PostAsJsonAsync(
-                $"http://{(InDocker ? "cache" : "192.168.50.102")}/o-{id}",
-                _mapper.Map<IEnumerable<OrderReadDto>>(order));
 
             _logger.LogInformation($"{DateTime.Now} -- Result = {JsonSerializer.Serialize(order)}");
 
@@ -158,55 +148,67 @@ namespace BazarOrderApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> OrderBook(int id)
         {
-            // TODO benchmark this method if we send a lot of requests to it, does the caching helps? 
-            _logger.LogInformation($"{DateTime.Now} -- POST /purchase/{id} Requested From {Request.Host.Host}");
-
-            // var request = new HttpRequestMessage(HttpMethod.Get,
-            //     $"http://{(InDocker ? "catalog" : "192.168.50.100")}/book/{id}");
-            var request = new HttpRequestMessage(HttpMethod.Get,
-                $"http://{(InDocker ? "cache" : "192.168.50.102")}/b-{id}");
-            request.Headers.Add("Accept", "application/json");
-
-            var client = _clientFactory.CreateClient();
-            _logger.LogInformation($"{DateTime.Now} -- Sending Request to Catalog Server /book/{id}");
-            var cacheResponse = await client.SendAsync(request);
-
-            if (cacheResponse.StatusCode == HttpStatusCode.OK)
+            if (_useCacheInPurchase)
             {
-                _logger.LogInformation($"{DateTime.Now} -- Catalog Server Returned Status code 200");
-                var book = await cacheResponse.Content.ReadFromJsonAsync<Book>();
+                _logger.LogInformation($"{DateTime.Now} -- POST /purchase/{id} Requested From {Request.Host.Host}");
 
-                if (book?.Quantity > 0)
+                var request = new HttpRequestMessage(HttpMethod.Get,
+                    $"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/b-{id}");
+                request.Headers.Add("Accept", "application/json");
+
+                var client = _clientFactory.CreateClient();
+                _logger.LogInformation($"{DateTime.Now} -- Sending Request to Cache Server /book/{id}");
+                var cacheResponse = await client.SendAsync(request);
+
+                if (cacheResponse.StatusCode == HttpStatusCode.OK)
                 {
-                    var updateRequest =
-                        new HttpRequestMessage(HttpMethod.Post,
-                            $"http://{(InDocker ? "catalog" : "192.168.50.100")}/book/quantity/dec/{id}")
-                        {
-                            Content = new StringContent("")
-                        };
-                    updateRequest.Content.Headers.ContentType = new MediaTypeWithQualityHeaderValue("application/json");
-                    _logger.LogInformation($"{DateTime.Now} -- Sending Decrement Request to Catalog Server");
-                    var updateResponse = await client.SendAsync(updateRequest);
-                    if (updateResponse.StatusCode == HttpStatusCode.NoContent)
+                    _logger.LogInformation($"{DateTime.Now} -- Cache Server Returned Status code 200");
+                    var book = await cacheResponse.Content.ReadFromJsonAsync<Book>();
+
+                    if (book?.Quantity > 0)
                     {
-                        _logger.LogInformation($"{DateTime.Now} -- Decrement Succeed in the Catalog Server");
-                        var order = new Order
+                        var updateRequest =
+                            new HttpRequestMessage(HttpMethod.Post,
+                                $"http://{(InDocker ? "catalog" : "192.168.50.100")}/book/quantity/dec/{id}")
+                            {
+                                Content = new StringContent("")
+                            };
+                        updateRequest.Content.Headers.ContentType =
+                            new MediaTypeWithQualityHeaderValue("application/json");
+                        _logger.LogInformation($"{DateTime.Now} -- Sending Decrement Request to Catalog Server");
+                        var updateResponse = await client.SendAsync(updateRequest);
+                        if (updateResponse.StatusCode == HttpStatusCode.NoContent)
                         {
-                            BookId = id,
-                            Time = DateTime.Now
-                        };
-                        _repo.AddOrder(order);
-                        _repo.SaveChanges();
+                            _logger.LogInformation($"{DateTime.Now} -- Decrement Succeed in the Catalog Server");
+                            var order = new Order
+                            {
+                                BookId = id,
+                                Time = DateTime.Now
+                            };
+                            _repo.AddOrder(order);
+                            _repo.SaveChanges();
 
-                        await client.PostAsJsonAsync(
-                            $"http://{(InDocker ? "cache" : "192.168.50.102")}/invalidate/o-{order.Id}",
-                            "");
+                            await client.PostAsJsonAsync(
+                                $"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/invalidate/o-{order.Id}",
+                                "");
 
-                        _logger.LogInformation($"{DateTime.Now} -- Result = {JsonSerializer.Serialize(order)}");
-                        return Ok(_mapper.Map<OrderReadDto>(order));
+                            await client.PostAsJsonAsync(
+                                $"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/invalidate/orders",
+                                "");
+
+                            _logger.LogInformation($"{DateTime.Now} -- Result = {JsonSerializer.Serialize(order)}");
+                            return Ok(_mapper.Map<OrderReadDto>(order));
+                        }
+
+                        if (updateResponse.StatusCode == HttpStatusCode.BadRequest)
+                        {
+                            _logger.LogError($"{DateTime.Now} -- Book is out of stock id={id}");
+                            return Problem("Book is out of Stock",
+                                $"http://{(InDocker ? "catalog" : "192.168.50.100")}/book/{id}",
+                                404, "Out of Stock Error");
+                        }
                     }
-
-                    if (updateResponse.StatusCode == HttpStatusCode.BadRequest)
+                    else
                     {
                         _logger.LogError($"{DateTime.Now} -- Book is out of stock id={id}");
                         return Problem("Book is out of Stock",
@@ -214,19 +216,89 @@ namespace BazarOrderApi.Controllers
                             404, "Out of Stock Error");
                     }
                 }
-                else
+                else if (cacheResponse.StatusCode == HttpStatusCode.NotFound)
                 {
-                    _logger.LogError($"{DateTime.Now} -- Book is out of stock id={id}");
-                    return Problem("Book is out of Stock",
-                        $"http://{(InDocker ? "catalog" : "192.168.50.100")}/book/{id}",
-                        404, "Out of Stock Error");
+                    var catalogRequest = new HttpRequestMessage(HttpMethod.Get,
+                        $"http://{(InDocker ? "catalog" : "192.168.50.100")}/book/{id}");
+
+                    var catalogResponse = client.Send(catalogRequest);
+
+                    if (catalogResponse.StatusCode == HttpStatusCode.OK)
+                    {
+                        _logger.LogInformation($"{DateTime.Now} -- Catalog Server Returned Status code 200");
+                        var book = await catalogResponse.Content.ReadFromJsonAsync<Book>();
+
+                        if (book?.Quantity > 0)
+                        {
+                            var updateRequest =
+                                new HttpRequestMessage(HttpMethod.Post,
+                                    $"http://{(InDocker ? "catalog" : "192.168.50.100")}/book/quantity/dec/{id}")
+                                {
+                                    Content = new StringContent("")
+                                };
+                            updateRequest.Content.Headers.ContentType =
+                                new MediaTypeWithQualityHeaderValue("application/json");
+                            _logger.LogInformation($"{DateTime.Now} -- Sending Decrement Request to Catalog Server");
+                            var updateResponse = await client.SendAsync(updateRequest);
+                            if (updateResponse.StatusCode == HttpStatusCode.NoContent)
+                            {
+                                _logger.LogInformation($"{DateTime.Now} -- Decrement Succeed in the Catalog Server");
+                                var order = new Order
+                                {
+                                    BookId = id,
+                                    Time = DateTime.Now
+                                };
+                                _repo.AddOrder(order);
+                                _repo.SaveChanges();
+
+                                await client.PostAsJsonAsync(
+                                    $"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/invalidate/orders",
+                                    "");
+
+                                _logger.LogInformation($"{DateTime.Now} -- Result = {JsonSerializer.Serialize(order)}");
+                                return Ok(_mapper.Map<OrderReadDto>(order));
+                            }
+
+                            if (updateResponse.StatusCode == HttpStatusCode.BadRequest)
+                            {
+                                _logger.LogError($"{DateTime.Now} -- Book is out of stock id={id}");
+                                return Problem("Book is out of Stock",
+                                    $"http://{(InDocker ? "catalog" : "192.168.50.100")}/book/{id}",
+                                    404, "Out of Stock Error");
+                            }
+                        }
+                        else
+                        {
+                            _logger.LogError($"{DateTime.Now} -- Book is out of stock id={id}");
+                            return Problem("Book is out of Stock",
+                                $"http://{(InDocker ? "catalog" : "192.168.50.100")}/book/{id}",
+                                404, "Out of Stock Error");
+                        }
+                    }
+                    else if (catalogResponse.StatusCode == HttpStatusCode.NotFound)
+                    {
+                        _logger.LogError($"{DateTime.Now} -- Book is not found id={id}");
+                        return Problem($"Book with id={id} does not exist",
+                            $"http://{(InDocker ? "catalog" : "192.168.50.100")}/book/{id}",
+                            404, "Book Does Not Exist Error");
+                    }
+                    else if (catalogResponse.StatusCode == HttpStatusCode.BadRequest)
+                    {
+                        _logger.LogError($"{DateTime.Now} -- Bad Request to catalog server " +
+                                         $"the request ==> http://{(InDocker ? "catalog" : "192.168.50.100")}/book/{id}");
+                        return BadRequest(catalogResponse.Content);
+                    }
                 }
             }
-            else if (cacheResponse.StatusCode == HttpStatusCode.NotFound)
+            else
             {
+                _logger.LogInformation($"{DateTime.Now} -- POST /purchase/{id} Requested From {Request.Host.Host}");
+
+                var client = _clientFactory.CreateClient();
                 var catalogRequest = new HttpRequestMessage(HttpMethod.Get,
                     $"http://{(InDocker ? "catalog" : "192.168.50.100")}/book/{id}");
 
+                _logger.LogInformation($"{DateTime.Now} -- Sending Request to Catalog Server /book/{id}");
                 var catalogResponse = client.Send(catalogRequest);
 
                 if (catalogResponse.StatusCode == HttpStatusCode.OK)
@@ -258,7 +330,7 @@ namespace BazarOrderApi.Controllers
                             _repo.SaveChanges();
 
                             await client.PostAsJsonAsync(
-                                $"http://{(InDocker ? "cache" : "192.168.50.102")}/invalidate/o-{order.Id}",
+                                $"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/invalidate/orders",
                                 "");
 
                             _logger.LogInformation($"{DateTime.Now} -- Result = {JsonSerializer.Serialize(order)}");
