@@ -104,6 +104,11 @@
                 </li>
             </ul>
 
+            <!--            <form action="#" class="d-flex">-->
+            <!--                <input aria-label="Order ID" class="form-control me-2" id="orderID" placeholder="Order ID"-->
+            <!--                       type="search">-->
+            <!--                <button class="btn btn-outline-success" onclick="getOrderById()">Get Order</button>-->
+            <!--            </form>-->
             <form action="#" class="d-flex">
                 <input aria-label="Search" class="form-control me-2" id="search" placeholder="Search" type="search">
                 <button class="btn btn-outline-success" onclick="searchInfo()">Search</button>
@@ -154,6 +159,21 @@
 <hr>
 
 <div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-6 col-md-12">
+            <form action="#" class="d-flex">
+                <input aria-label="Order Id" class="form-control me-2 mb-2 mt-2" id="orderID" placeholder="Order ID"
+                       type="number">
+                <button aria-label="Get Order By Id Button" class="btn btn-outline-success me-2 mb-2 mt-2"
+                        onclick="getOrderById()">
+                    Get
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid mb-1">
     <h1>Orders Info Table:</h1>
     <table class="table table-dark table-hover table-striped">
         <thead>
@@ -168,6 +188,26 @@
     </table>
     <button class="btn btn-indigo" onclick="clearOrderTable()">Clear Table</button>
 </div>
+<div aria-hidden="true" aria-labelledby="modal-title" class="modal fade" data-bs-backdrop="static"
+     data-bs-keyboard="false"
+     id="staticBackdrop" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-title">Error</h5>
+                <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+            </div>
+            <div class="modal-body">
+                <p id="modalBody">
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" data-bs-dismiss="modal" type="button">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <script crossorigin="anonymous"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
