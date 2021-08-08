@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>CacheBenchmarking.CatalogBenchmarks-20210807-044156</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet=v0.13.0, OS=fedora 34
+Intel Core i7-8550U CPU 1.80GHz (Kaby Lake R), 1 CPU, 8 logical and 4 physical cores
+.NET SDK=5.0.205
+  [Host]     : .NET 5.0.8 (5.0.821.37601), X64 RyuJIT
+  Job-FILVJN : .NET 5.0.8 (5.0.821.37601), X64 RyuJIT
+</code></pre>
+<pre><code>IterationCount=50  RunStrategy=Throughput  
+</code></pre>
+
+<table>
+<thead><tr><th>                     Method</th><th>  Mean</th><th> Error</th><th>StdDev</th><th>Median</th><th>Rank</th>
+</tr>
+</thead><tbody><tr><td>TestGetByIdWithCache</td><td>277.3 &mu;s</td><td>12.22 &mu;s</td><td>24.69 &mu;s</td><td>291.8 &mu;s</td><td>1</td>
+</tr><tr><td>TestGetAllWithCache</td><td>292.6 &mu;s</td><td>1.21 &mu;s</td><td>2.41 &mu;s</td><td>292.6 &mu;s</td><td>1</td>
+</tr><tr><td>TestSearchNameWithCache</td><td>295.2 &mu;s</td><td>1.23 &mu;s</td><td>2.34 &mu;s</td><td>295.0 &mu;s</td><td>1</td>
+</tr><tr><td>TestSearchTopicWithCache</td><td>298.4 &mu;s</td><td>2.63 &mu;s</td><td>5.13 &mu;s</td><td>296.9 &mu;s</td><td>1</td>
+</tr><tr><td>TestGetByIdWithoutCache</td><td>2,070.3 &mu;s</td><td>16.30 &mu;s</td><td>32.93 &mu;s</td><td>2,065.0 &mu;s</td><td>2</td>
+</tr><tr><td>TestSearchTopicWithoutCache</td><td>2,201.8 &mu;s</td><td>6.91 &mu;s</td><td>13.95 &mu;s</td><td>2,201.5 &mu;s</td><td>3</td>
+</tr><tr><td>TestGetAllWithoutCache</td><td>2,259.2 &mu;s</td><td>98.79 &mu;s</td><td>199.55 &mu;s</td><td>2,388.2 &mu;s</td><td>4</td>
+</tr><tr><td>TestSearchNameWithoutCache</td><td>2,314.7 &mu;s</td><td>4.91 &mu;s</td><td>9.58 &mu;s</td><td>2,314.7 &mu;s</td><td>5</td>
+</tr><tr><td>TestDecrementQuantityWithoutCache</td><td>52,132.5 &mu;s</td><td>36,846.66 &mu;s</td><td>74,432.07 &mu;s</td><td>2,103.8 &mu;s</td><td>6</td>
+</tr><tr><td>TestIncrementQuantityWithoutCache</td><td>159,668.7 &mu;s</td><td>445.30 &mu;s</td><td>802.96 &mu;s</td><td>159,844.8 &mu;s</td><td>7</td>
+</tr></tbody></table>
+</body>
+</html>
