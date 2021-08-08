@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace BazarCacheApi.Models
@@ -7,6 +8,8 @@ namespace BazarCacheApi.Models
     {
         [Required]
         public Book Book { get; set; }
+
+        public IEnumerable<Book> Books { get; set; }
 
         [Required]
         public DateTime Time { get; set; }
