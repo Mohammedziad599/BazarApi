@@ -5,9 +5,9 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
-COPY ["BazarCacheApi/BazarCacheApi.csproj", "BazarCacheApi/"]
+COPY ["BazarCacheApi.csproj", "BazarCacheApi/"]
 RUN dotnet restore "BazarCacheApi/BazarCacheApi.csproj"
-COPY . .
+COPY . ./BazarCacheApi
 WORKDIR "/src/BazarCacheApi"
 RUN dotnet build "BazarCacheApi.csproj" -c Release -o /app/build
 
