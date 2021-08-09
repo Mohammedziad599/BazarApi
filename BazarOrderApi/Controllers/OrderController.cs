@@ -203,7 +203,7 @@ namespace BazarOrderApi.Controllers
                         if (updateResponse.StatusCode == HttpStatusCode.BadRequest)
                         {
                             _logger.LogError($"{DateTime.Now} -- Book is out of stock id={id}");
-                            return Problem("Book is out of Stock",
+                            return Problem("Book is out of Stock.",
                                 $"http://{(InDocker ? "catalog" : "192.168.50.100")}/book/{id}",
                                 404, "Out of Stock Error");
                         }
@@ -211,7 +211,7 @@ namespace BazarOrderApi.Controllers
                     else
                     {
                         _logger.LogError($"{DateTime.Now} -- Book is out of stock id={id}");
-                        return Problem("Book is out of Stock",
+                        return Problem("Book is out of Stock.",
                             $"http://{(InDocker ? "catalog" : "192.168.50.100")}/book/{id}",
                             404, "Out of Stock Error");
                     }
@@ -262,7 +262,7 @@ namespace BazarOrderApi.Controllers
                             if (updateResponse.StatusCode == HttpStatusCode.BadRequest)
                             {
                                 _logger.LogError($"{DateTime.Now} -- Book is out of stock id={id}");
-                                return Problem("Book is out of Stock",
+                                return Problem("Book is out of Stock.",
                                     $"http://{(InDocker ? "catalog" : "192.168.50.100")}/book/{id}",
                                     404, "Out of Stock Error");
                             }
@@ -270,7 +270,7 @@ namespace BazarOrderApi.Controllers
                         else
                         {
                             _logger.LogError($"{DateTime.Now} -- Book is out of stock id={id}");
-                            return Problem("Book is out of Stock",
+                            return Problem("Book is out of Stock.",
                                 $"http://{(InDocker ? "catalog" : "192.168.50.100")}/book/{id}",
                                 404, "Out of Stock Error");
                         }
@@ -278,7 +278,7 @@ namespace BazarOrderApi.Controllers
                     else if (catalogResponse.StatusCode == HttpStatusCode.NotFound)
                     {
                         _logger.LogError($"{DateTime.Now} -- Book is not found id={id}");
-                        return Problem($"Book with id={id} does not exist",
+                        return Problem($"Book with id={id} does not exist.",
                             $"http://{(InDocker ? "catalog" : "192.168.50.100")}/book/{id}",
                             404, "Book Does Not Exist Error");
                     }
@@ -340,7 +340,7 @@ namespace BazarOrderApi.Controllers
                         if (updateResponse.StatusCode == HttpStatusCode.BadRequest)
                         {
                             _logger.LogError($"{DateTime.Now} -- Book is out of stock id={id}");
-                            return Problem("Book is out of Stock",
+                            return Problem("Book is out of Stock.",
                                 $"http://{(InDocker ? "catalog" : "192.168.50.100")}/book/{id}",
                                 404, "Out of Stock Error");
                         }
@@ -348,7 +348,7 @@ namespace BazarOrderApi.Controllers
                     else
                     {
                         _logger.LogError($"{DateTime.Now} -- Book is out of stock id={id}");
-                        return Problem("Book is out of Stock",
+                        return Problem("Book is out of Stock.",
                             $"http://{(InDocker ? "catalog" : "192.168.50.100")}/book/{id}",
                             404, "Out of Stock Error");
                     }
@@ -356,7 +356,7 @@ namespace BazarOrderApi.Controllers
                 else if (catalogResponse.StatusCode == HttpStatusCode.NotFound)
                 {
                     _logger.LogError($"{DateTime.Now} -- Book is not found id={id}");
-                    return Problem($"Book with id={id} does not exist",
+                    return Problem($"Book with id={id} does not exist.",
                         $"http://{(InDocker ? "catalog" : "192.168.50.100")}/book/{id}",
                         404, "Book Does Not Exist Error");
                 }
