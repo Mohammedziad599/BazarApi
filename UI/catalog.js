@@ -1,8 +1,18 @@
+/**
+ * return the book that has the id=bookId
+ * @param bookId id of the book
+ * @returns {Promise<*>} return an axios response.
+ */
 async function getCatalogData(bookId) {
     let serverPath = getDeployment("catalog");
     return await axios.get(`http://${serverPath}/book/${bookId}`);
 }
 
+/**
+ * show the book info after clicking on the button in the book card element.
+ * @param element the button element.
+ * @returns {Promise<undefined|*>} return undefined if an error occured.
+ */
 async function info(element) {
     let id = parseInt(element.getAttribute("data-id"));
     let cacheResponse = await getCacheValue(`b-${id}`);
@@ -34,6 +44,11 @@ async function info(element) {
 
 }
 
+/**
+ * show the books info in the table.
+ * @param data the books that you want to show.
+ * @param isArray if the element an array or if it is one object.
+ */
 function showInfo(data, isArray) {
     if (data != null) {
         const infoTable = document.getElementById("infoTable");
@@ -76,6 +91,10 @@ function showInfo(data, isArray) {
     }
 }
 
+/**
+ * show all info about the books/
+ * @returns {Promise<void>} nothing
+ */
 async function showAll() {
     let cacheResponse = await getCacheValue("books");
     if (cacheResponse !== undefined) {
@@ -99,6 +118,11 @@ async function showAll() {
     });
 }
 
+/**
+ * returns what search method that the user selected from the radio button
+ * it can either be Topic or Name.
+ * @returns {null|*} return null if no element selected and will return the value of the radio button that is selected.
+ */
 function getSearchMethod() {
     let element = document.getElementsByName('search_method');
     for (let i = 0; i < element.length; i++) {
@@ -109,6 +133,10 @@ function getSearchMethod() {
     return null;
 }
 
+/**
+ * search for book either by topic or name, and then show the info in the table.
+ * @returns {Promise<void>} nothing.
+ */
 async function searchInfo() {
     let serverPath = getDeployment("catalog");
     if (getSearchMethod() === "Topic") {
@@ -170,6 +198,10 @@ async function searchInfo() {
     }
 }
 
+/**
+ * show the books in a specialized cards.
+ * @param booksData the books data.
+ */
 function showBooks(booksData) {
     const books = document.getElementById("books");
     while (books.lastElementChild) {
@@ -261,6 +293,10 @@ function showBooks(booksData) {
     }
 }
 
+/**
+ * get all book info.
+ * @returns {Promise<void>} nothing.
+ */
 async function getBooks() {
     let serverPath = getDeployment("catalog");
     let cacheResponse = await getCacheValue("books");
@@ -285,6 +321,9 @@ async function getBooks() {
     })
 }
 
+/**
+ * clear the book table.
+ */
 function clearInfoTable() {
     const infoTable = document.getElementById("infoTable");
     while (infoTable.lastElementChild) {

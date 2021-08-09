@@ -156,7 +156,7 @@
         <tbody id="infoTable">
         </tbody>
     </table>
-    <button class="btn btn-indigo" onclick="clearInfoTable()">Clear Table</button>
+    <button class="btn btn-indigo" onclick="clearInfoTable(); return false;">Clear Table</button>
 </div>
 
 <hr>
@@ -168,7 +168,7 @@
                 <input aria-label="Order Id" class="form-control me-2 mb-2 mt-2" id="orderID" placeholder="Order ID"
                        type="number">
                 <button aria-label="Get Order By Id Button" class="btn btn-outline-success me-2 mb-2 mt-2"
-                        onclick="getOrderById()">
+                        onclick="getOrderById(); return false;">
                     Get
                 </button>
             </form>
@@ -189,7 +189,7 @@
         <tbody id="orderTable">
         </tbody>
     </table>
-    <button class="btn btn-indigo" onclick="clearOrderTable()">Clear Table</button>
+    <button class="btn btn-indigo" onclick="clearOrderTable(); return false;">Clear Table</button>
 </div>
 <div aria-hidden="true" aria-labelledby="modal-title" class="modal fade" data-bs-backdrop="static"
      data-bs-keyboard="false"

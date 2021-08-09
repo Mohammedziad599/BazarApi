@@ -1,14 +1,24 @@
+/**
+ * send purchase book request to the server.
+ * @param id the id of the book.
+ * @returns {Promise<*>} axios response.
+ */
 async function order(id) {
     let serverPath = getDeployment("order");
     return await axios.post(`https://${serverPath}/purchase/${id}`, {});
 }
 
+/**
+ * purchase a book and show the order details in the order table.
+ * @param element the button that the user clicked.
+ * @returns {Promise<void>} nothing.
+ */
 async function purchase(element) {
     let id = parseInt(element.getAttribute("data-id"));
     try {
         let response = await order(id);
         await setCacheValue(`o-${id}`, response.data);
-        return response.data;
+        showOrder(response.data, false);
     } catch (error) {
         if (error.response && error.response.status === 400) {
             let modalBody = document.getElementById("modalBody");
@@ -25,10 +35,15 @@ async function purchase(element) {
             });
             errorModal.show();
         }
-        return undefined;
+        clearOrderTable();
     }
 }
 
+/**
+ * adds orders info to the orders table.
+ * @param data the array or object that contains the order details.
+ * @param isArray if the data is array or object.
+ */
 function showOrder(data, isArray) {
     if (data != null) {
         const orderTable = document.getElementById("orderTable");
@@ -65,6 +80,10 @@ function showOrder(data, isArray) {
     }
 }
 
+/**
+ * get all orders info from the server.
+ * @returns {Promise<void>} nothing.
+ */
 async function listOrders() {
     let cacheResponse = await getCacheValue("orders");
     if (cacheResponse !== undefined) {
@@ -88,8 +107,12 @@ async function listOrders() {
     });
 }
 
+/**
+ * will get the value from the user and then return the order details in the order table.
+ * @returns {Promise<void>} nothing.
+ */
 async function getOrderById() {
-    let orderId = document.getElementById("orderID").value;
+    let orderId = parseInt(document.getElementById("orderID").value);
     if (typeof orderId === 'number' && orderId % 1 === 0) {
         let cacheResponse = await getCacheValue(`o-${orderId}`);
         if (cacheResponse !== undefined) {
@@ -119,9 +142,18 @@ async function getOrderById() {
             }
         });
     } else {
+        let modalBody = document.getElementById("modalBody");
+        modalBody.innerText = `Order id should be integer.`;
+        errorModal = new bootstrap.Modal(document.getElementById("modal"), {
+            keyboard: false
+        });
+        errorModal.show();
     }
 }
 
+/**
+ * clear the order tabke.
+ */
 function clearOrderTable() {
     const orderTable = document.getElementById("orderTable");
     while (orderTable.lastElementChild) {
