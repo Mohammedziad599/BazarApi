@@ -230,6 +230,10 @@ namespace BazarCatalogApi.Controllers
                 $"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/invalidate/b-{id}"
                 , new StringContent(""));
 
+            await client.PostAsync(
+                $"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/invalidate/books"
+                , new StringContent(""));
+
             _logger.LogInformation($"{DateTime.Now} -- Result = {{}}");
 
             return NoContent();
@@ -281,6 +285,10 @@ namespace BazarCatalogApi.Controllers
                 $"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/invalidate/b-{id}"
                 , new StringContent(""));
 
+            await client.PostAsync(
+                $"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/invalidate/books"
+                , new StringContent(""));
+
             _logger.LogInformation($"{DateTime.Now} -- Result = {{}}");
 
             return NoContent();
@@ -319,6 +327,10 @@ namespace BazarCatalogApi.Controllers
 
             await client.PostAsync(
                 $"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/invalidate/b-{id}"
+                , new StringContent(""));
+
+            await client.PostAsync(
+                $"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/invalidate/books"
                 , new StringContent(""));
 
             _logger.LogInformation($"{DateTime.Now} -- Result = {{}}");
