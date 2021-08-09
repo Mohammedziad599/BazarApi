@@ -16,14 +16,14 @@ async function info(element) {
     } catch (error) {
         if (error.response && error.response.status === 404) {
             let modalBody = document.getElementById("modalBody");
-            modalBody.innerText = `There is no book with id = "${id}"`;
+            modalBody.innerText = `There is no book with id = "${id}".`;
             errorModal = new bootstrap.Modal(document.getElementById("modal"), {
                 keyboard: false
             });
             errorModal.show();
         } else if (error.response && error.response.status === 400) {
             let modalBody = document.getElementById("modalBody");
-            modalBody.innerText = `Bad Request to retrive the book book id should be an integer`;
+            modalBody.innerText = `Bad Request to retrive the book book id should be an integer.`;
             errorModal = new bootstrap.Modal(document.getElementById("modal"), {
                 keyboard: false
             });
@@ -132,7 +132,7 @@ async function searchInfo() {
                 });
                 errorModal.show();
             } else if (error.request && error.request.status === 404) {
-                modalBody.innerText = `No Books Found`;
+                modalBody.innerText = `No Books Found.`;
                 errorModal = new bootstrap.Modal(document.getElementById("modal"), {
                     keyboard: false
                 });
@@ -160,7 +160,7 @@ async function searchInfo() {
                 });
                 errorModal.show();
             } else if (error.request && error.request.status === 404) {
-                modalBody.innerText = `No Books Found`;
+                modalBody.innerText = `No Books Found.`;
                 errorModal = new bootstrap.Modal(document.getElementById("modal"), {
                     keyboard: false
                 });

@@ -5,8 +5,28 @@ async function order(id) {
 
 async function purchase(element) {
     let id = parseInt(element.getAttribute("data-id"));
-    let data = await order(id);
-    return data.data;
+    try {
+        let response = await order(id);
+        await setCacheValue(`o-${id}`, response.data);
+        return response.data;
+    } catch (error) {
+        if (error.response && error.response.status === 400) {
+            let modalBody = document.getElementById("modalBody");
+            modalBody.innerText = `Bad Request when purchasing book with id = ${id}.`;
+            errorModal = new bootstrap.Modal(document.getElementById("modal"), {
+                keyboard: false
+            });
+            errorModal.show();
+        } else if (error.response && error.response.status === 404) {
+            let modalBody = document.getElementById("modalBody");
+            modalBody.innerText = error.response.data.detail;
+            errorModal = new bootstrap.Modal(document.getElementById("modal"), {
+                keyboard: false
+            });
+            errorModal.show();
+        }
+        return undefined;
+    }
 }
 
 function showOrder(data, isArray) {
@@ -45,17 +65,61 @@ function showOrder(data, isArray) {
     }
 }
 
-function listOrders() {
-    let serverPath = getDeployment("order");
-    if (Cache.get("o") !== undefined) {
-        showOrder(Cache.get("o"), true);
+async function listOrders() {
+    let cacheResponse = await getCacheValue("orders");
+    if (cacheResponse !== undefined) {
+        showOrder(cacheResponse, true);
         return;
     }
-    axios.get(`https://${serverPath}/purchase/list`).then(response => {
+    let serverPath = getDeployment("order");
+    axios.get(`https://${serverPath}/purchase/list`).then(async response => {
         const data = response.data;
-        Cache.set("o", data);
         showOrder(data, true);
+        await setCacheArray("orders", data);
+    }).catch(error => {
+        if (error.response && error.response.status === 404) {
+            let modalBody = document.getElementById("modalBody");
+            modalBody.innerText = `No Orders Found.`;
+            errorModal = new bootstrap.Modal(document.getElementById("modal"), {
+                keyboard: false
+            });
+            errorModal.show();
+        }
     });
+}
+
+async function getOrderById() {
+    let orderId = document.getElementById("orderID").value;
+    if (typeof orderId === 'number' && orderId % 1 === 0) {
+        let cacheResponse = await getCacheValue(`o-${orderId}`);
+        if (cacheResponse !== undefined) {
+            showOrder(cacheResponse, false);
+            return;
+        }
+        let serverPath = getDeployment("order");
+        axios.get(`https://${serverPath}/purchase/${orderId}`).then(async response => {
+            let data = response.data;
+            showOrder(data, false);
+            await setCacheValue(`o-${orderId}`, data);
+        }).catch(error => {
+            if (error.response && error.response.status === 400) {
+                let modalBody = document.getElementById("modalBody");
+                modalBody.innerText = `Bad Request Order id should be integer.`;
+                errorModal = new bootstrap.Modal(document.getElementById("modal"), {
+                    keyboard: false
+                });
+                errorModal.show();
+            } else if (error.response && error.response.status === 404) {
+                let modalBody = document.getElementById("modalBody");
+                modalBody.innerText = `Order not found with id=${orderId}.`;
+                errorModal = new bootstrap.Modal(document.getElementById("modal"), {
+                    keyboard: false
+                });
+                errorModal.show();
+            }
+        });
+    } else {
+    }
 }
 
 function clearOrderTable() {
