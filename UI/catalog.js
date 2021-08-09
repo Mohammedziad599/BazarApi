@@ -5,12 +5,33 @@ async function getCatalogData(bookId) {
 
 async function info(element) {
     let id = parseInt(element.getAttribute("data-id"));
-    if (Cache.get(`c${id}`)) {
-        return Cache.get(`c${id}`);
+    let cacheResponse = await getCacheValue(`b-${id}`);
+    if (cacheResponse !== undefined) {
+        return cacheResponse;
     }
-    let data = await getCatalogData(id);
-    Cache.set(`c${id}`, data.data);
-    return data.data;
+    try {
+        let response = await getCatalogData(id);
+        await setCacheValue(`b-${id}`, response.data);
+        return response.data;
+    } catch (error) {
+        if (error.response && error.response.status === 404) {
+            let modalBody = document.getElementById("modalBody");
+            modalBody.innerText = `There is no book with id = "${id}"`;
+            errorModal = new bootstrap.Modal(document.getElementById("modal"), {
+                keyboard: false
+            });
+            errorModal.show();
+        } else if (error.response && error.response.status === 400) {
+            let modalBody = document.getElementById("modalBody");
+            modalBody.innerText = `Bad Request to retrive the book book id should be an integer`;
+            errorModal = new bootstrap.Modal(document.getElementById("modal"), {
+                keyboard: false
+            });
+            errorModal.show();
+        }
+        return undefined;
+    }
+
 }
 
 function showInfo(data, isArray) {
@@ -55,16 +76,26 @@ function showInfo(data, isArray) {
     }
 }
 
-function showAll() {
-    let serverPath = getDeployment("catalog");
-    if (Cache.get("books") !== undefined) {
-        showInfo(Cache.get("books"), true);
+async function showAll() {
+    let cacheResponse = await getCacheValue("books");
+    if (cacheResponse !== undefined) {
+        showInfo(cacheResponse, true);
         return;
     }
-    axios.get(`http://${serverPath}/book`).then(response => {
+    let serverPath = getDeployment("catalog");
+    axios.get(`http://${serverPath}/book`).then(async response => {
         const data = response.data;
-        Cache.set("books", data);
         showInfo(data, true);
+        await setCacheArray("books", data);
+    }).catch(error => {
+        if (error.request && error.request.status === 404) {
+            let modalBody = document.getElementById("modalBody");
+            modalBody.innerText = `No Books to show please visit us later.`;
+            errorModal = new bootstrap.Modal(document.getElementById("modal"), {
+                keyboard: false
+            });
+            errorModal.show();
+        }
     });
 }
 
@@ -78,35 +109,63 @@ function getSearchMethod() {
     return null;
 }
 
-function searchInfo() {
+async function searchInfo() {
     let serverPath = getDeployment("catalog");
     if (getSearchMethod() === "Topic") {
         let topic = document.getElementById("search").value;
-        if (Cache.get(`topic/${topic}`) !== undefined) {
-            showInfo(Cache.get(`topic/${topic}`), true);
+        let cacheResponse = await getCacheValue(`s-topic-${topic}`);
+        if (cacheResponse !== undefined) {
+            showInfo(cacheResponse, true);
             return;
         }
-        axios.get(`http://${serverPath}/book/topic/search/${topic}`).then(response => {
+        axios.get(`http://${serverPath}/book/topic/search/${topic}`).then(async response => {
             const data = response.data;
-            Cache.set(`topic/${topic}`, data);
             showInfo(data, true);
-        }).catch(() => {
+            await setCacheArray(`s-topic-${topic}`, data);
+        }).catch(error => {
             clearInfoTable();
-            alert("No data found");
+            let modalBody = document.getElementById("modalBody");
+            if (error.request && error.request.status === 400) {
+                modalBody.innerText = `Write something in the search textbox it should not be empty.`;
+                errorModal = new bootstrap.Modal(document.getElementById("modal"), {
+                    keyboard: false
+                });
+                errorModal.show();
+            } else if (error.request && error.request.status === 404) {
+                modalBody.innerText = `No Books Found`;
+                errorModal = new bootstrap.Modal(document.getElementById("modal"), {
+                    keyboard: false
+                });
+                errorModal.show();
+            }
         });
     } else {
         let name = document.getElementById("search").value;
-        if (Cache.get(`name/${name}`) !== undefined) {
-            showInfo(Cache.get(`name/${name}`), true);
+        let cacheResponse = await getCacheValue(`s-name-${name}`);
+        if (cacheResponse !== undefined) {
+            showInfo(cacheResponse, true);
             return;
         }
-        axios.get(`http://${serverPath}/book/name/search/${name}`).then(response => {
+        axios.get(`http://${serverPath}/book/name/search/${name}`).then(async response => {
             const data = response.data;
-            Cache.set(`name/${name}`, data);
             showInfo(data, true);
+            await setCacheArray(`s-name-${name}`, data)
         }).catch(() => {
             clearInfoTable();
-            alert("No data found");
+            let modalBody = document.getElementById("modalBody");
+            if (error.request && error.request.status === 400) {
+                modalBody.innerText = `Write something in the search textbox it should not be empty.`;
+                errorModal = new bootstrap.Modal(document.getElementById("modal"), {
+                    keyboard: false
+                });
+                errorModal.show();
+            } else if (error.request && error.request.status === 404) {
+                modalBody.innerText = `No Books Found`;
+                errorModal = new bootstrap.Modal(document.getElementById("modal"), {
+                    keyboard: false
+                });
+                errorModal.show();
+            }
         });
     }
 }
@@ -146,7 +205,9 @@ function showBooks(booksData) {
             infoButton.innerText = "Info";
             infoButton.onclick = function () {
                 info(this).then(response => {
-                    showInfo(response, false);
+                    if (response !== undefined) {
+                        showInfo(response, false);
+                    }
                 });
             }
             infoButton.href = "#";
@@ -183,7 +244,9 @@ function showBooks(booksData) {
             infoButton.innerText = "Info";
             infoButton.onclick = function () {
                 info(this).then(response => {
-                    showInfo(response, false);
+                    if (response !== undefined) {
+                        showInfo(response, false);
+                    }
                 });
             }
             infoButton.href = "#";
@@ -198,18 +261,27 @@ function showBooks(booksData) {
     }
 }
 
-function getBooks() {
+async function getBooks() {
     let serverPath = getDeployment("catalog");
-    if (Cache.get("books") !== undefined) {
-        showBooks(Cache.get("books"));
+    let cacheResponse = await getCacheValue("books");
+    if (cacheResponse !== undefined) {
+        showBooks(cacheResponse);
         return;
     }
-    axios.get(`http://${serverPath}/book`).then(response => {
+    axios.get(`http://${serverPath}/book`).then(async response => {
         const data = response.data;
-        Cache.set("books", data);
         showBooks(data);
-    }).catch(reason => {
-        alert(reason);
+        await setCacheArray("books", data);
+    }).catch(error => {
+        if (error.response && error.response.status === 404) {
+            document.getElementById("waitingMessage").innerText = "No Books found";
+            let modalBody = document.getElementById("modalBody");
+            modalBody.innerText = `No Books to show please visit us later.`;
+            errorModal = new bootstrap.Modal(document.getElementById("modal"), {
+                keyboard: false
+            });
+            errorModal.show();
+        }
     })
 }
 
