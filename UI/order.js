@@ -18,6 +18,12 @@ async function purchase(element) {
     try {
         let response = await order(id);
         await setCacheValue(`o-${id}`, response.data);
+        let modalBody = document.getElementById("successBody");
+        modalBody.innerText = `Success you have purchased book that has id = ${id} see info in the order table.`;
+        successModal = new bootstrap.Modal(document.getElementById("successModal"), {
+            keyboard: false
+        });
+        successModal.show();
         showOrder(response.data, false);
     } catch (error) {
         if (error.response && error.response.status === 400) {

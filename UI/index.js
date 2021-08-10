@@ -1,4 +1,5 @@
 let errorModal;
+let successModal;
 
 /**
  * this function will used to get the server ip based on user choise in the ui

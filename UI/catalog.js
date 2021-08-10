@@ -65,10 +65,13 @@ function showInfo(data, isArray) {
                 topic.innerText = data[i].topic;
                 let price = document.createElement("td");
                 price.innerText = data[i].price;
+                let quantity = document.createElement("td");
+                quantity.innerText = data[i].quantity;
                 tableRow.appendChild(itemThead);
                 tableRow.appendChild(name);
                 tableRow.appendChild(topic);
                 tableRow.appendChild(price);
+                tableRow.appendChild(quantity);
                 infoTable.appendChild(tableRow);
             }
         } else {
@@ -82,10 +85,13 @@ function showInfo(data, isArray) {
             topic.innerText = data.topic;
             let price = document.createElement("td");
             price.innerText = data.price;
+            let quantity = document.createElement("td");
+            quantity.innerText = data.quantity;
             tableRow.appendChild(itemThead);
             tableRow.appendChild(name);
             tableRow.appendChild(topic);
             tableRow.appendChild(price);
+            tableRow.appendChild(quantity);
             infoTable.appendChild(tableRow);
         }
     }
