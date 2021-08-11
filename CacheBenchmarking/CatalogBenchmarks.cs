@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 namespace CacheBenchmarking
 {
     [Orderer(SummaryOrderPolicy.FastestToSlowest)]
-    [SimpleJob(RunStrategy.ColdStart, 50)]
+    [SimpleJob(RunStrategy.ColdStart, 100)]
     [MinColumn]
     [MaxColumn]
     [MeanColumn]
@@ -25,15 +25,15 @@ namespace CacheBenchmarking
     public class CatalogBenchmarks
     {
         private static readonly HttpClient Client = new();
-        private static readonly JsonPatchDocument<BookUpdateDto> patchDocument = new();
-        private readonly StringContent requestContent;
+        private static readonly JsonPatchDocument<BookUpdateDto> PatchDocument = new();
+        private readonly StringContent _requestContent;
 
         public CatalogBenchmarks()
         {
-            patchDocument.Replace(book => book.Quantity, 200);
-            patchDocument.Replace(book => book.Price, 50.9);
-            var serializedDoc = JsonConvert.SerializeObject(patchDocument);
-            requestContent = new StringContent(serializedDoc, Encoding.UTF8, "application/json-patch+json");
+            PatchDocument.Replace(book => book.Quantity, 200);
+            PatchDocument.Replace(book => book.Price, 50.9);
+            var serializedDoc = JsonConvert.SerializeObject(PatchDocument);
+            _requestContent = new StringContent(serializedDoc, Encoding.UTF8, "application/json-patch+json");
         }
 
         [Benchmark]
@@ -87,7 +87,7 @@ namespace CacheBenchmarking
         [Benchmark]
         public async Task TestUpdateQuantityWithoutCache()
         {
-            await Client.PatchAsync("http://localhost:5000/book/update/1", requestContent);
+            await Client.PatchAsync("http://localhost:5000/book/update/1", _requestContent);
         }
 
         [Benchmark]

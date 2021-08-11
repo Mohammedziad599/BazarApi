@@ -8,7 +8,7 @@ using BenchmarkDotNet.Order;
 namespace CacheBenchmarking
 {
     [Orderer(SummaryOrderPolicy.FastestToSlowest)]
-    [SimpleJob(RunStrategy.ColdStart, 50)]
+    [SimpleJob(RunStrategy.ColdStart, 100)]
     [MinColumn]
     [MaxColumn]
     [MeanColumn]
