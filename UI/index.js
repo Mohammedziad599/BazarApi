@@ -34,34 +34,6 @@ function getDeployment(server) {
 }
 
 /**
- * this will send a request to the cache to cache the key and the value in the cache server.
- * @param key the key as a string that represent the value in the cache server
- * @param value the value that i want to cache in the server
- * @returns {Promise<void>} nothing
- */
-async function setCacheValue(key, value) {
-    let cacheServerPath = getDeployment("cache");
-    try {
-        await axios.post(`http://${cacheServerPath}/cache/${key}`, value);
-    } catch (error) {
-    }
-}
-
-/**
- * this will send a request to the cache to cache the key and the array in the cache server.
- * @param key the key as a string that represent the array in the cache server
- * @param arrayOfValues the array that i want to cache in the server
- * @returns {Promise<void>} nothing
- */
-async function setCacheArray(key, arrayOfValues) {
-    let cacheServerPath = getDeployment("cache");
-    try {
-        await axios.post(`http://${cacheServerPath}/cache/array/${key}`, arrayOfValues);
-    } catch (error) {
-    }
-}
-
-/**
  * this function return the value of this key from the cache server
  * @param key the key as a string that represent the value in the cache server
  * @returns {Promise<undefined|*>} either undifined if an error happend or it will return an array of books or a book

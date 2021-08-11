@@ -17,7 +17,6 @@ async function purchase(element) {
     let id = parseInt(element.getAttribute("data-id"));
     try {
         let response = await order(id);
-        await setCacheValue(`o-${id}`, response.data);
         let modalBody = document.getElementById("successBody");
         modalBody.innerText = `Success you have purchased book that has id = ${id} see info in the order table.`;
         successModal = new bootstrap.Modal(document.getElementById("successModal"), {
@@ -100,7 +99,6 @@ async function listOrders() {
     axios.get(`https://${serverPath}/purchase/list`).then(async response => {
         const data = response.data;
         showOrder(data, true);
-        await setCacheArray("orders", data);
     }).catch(error => {
         if (error.response && error.response.status === 404) {
             let modalBody = document.getElementById("modalBody");
@@ -129,7 +127,6 @@ async function getOrderById() {
         axios.get(`https://${serverPath}/purchase/${orderId}`).then(async response => {
             let data = response.data;
             showOrder(data, false);
-            await setCacheValue(`o-${orderId}`, data);
         }).catch(error => {
             if (error.response && error.response.status === 400) {
                 let modalBody = document.getElementById("modalBody");

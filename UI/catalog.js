@@ -21,7 +21,6 @@ async function info(element) {
     }
     try {
         let response = await getCatalogData(id);
-        await setCacheValue(`b-${id}`, response.data);
         return response.data;
     } catch (error) {
         if (error.response && error.response.status === 404) {
@@ -111,7 +110,6 @@ async function showAll() {
     axios.get(`http://${serverPath}/book`).then(async response => {
         const data = response.data;
         showInfo(data, true);
-        await setCacheArray("books", data);
     }).catch(error => {
         if (error.request && error.request.status === 404) {
             let modalBody = document.getElementById("modalBody");
@@ -155,7 +153,6 @@ async function searchInfo() {
         axios.get(`http://${serverPath}/book/topic/search/${topic}`).then(async response => {
             const data = response.data;
             showInfo(data, true);
-            await setCacheArray(`s-topic-${topic}`, data);
         }).catch(error => {
             clearInfoTable();
             let modalBody = document.getElementById("modalBody");
@@ -183,7 +180,6 @@ async function searchInfo() {
         axios.get(`http://${serverPath}/book/name/search/${name}`).then(async response => {
             const data = response.data;
             showInfo(data, true);
-            await setCacheArray(`s-name-${name}`, data)
         }).catch(() => {
             clearInfoTable();
             let modalBody = document.getElementById("modalBody");
@@ -313,7 +309,6 @@ async function getBooks() {
     axios.get(`http://${serverPath}/book`).then(async response => {
         const data = response.data;
         showBooks(data);
-        await setCacheArray("books", data);
     }).catch(error => {
         if (error.response && error.response.status === 404) {
             document.getElementById("waitingMessage").innerText = "No Books found";
