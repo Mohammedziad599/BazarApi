@@ -1,5 +1,7 @@
 let errorModal;
 let successModal;
+let CatalogReplica = 0;
+let OrderReplica = 0;
 
 /**
  * this function will used to get the server ip based on user choise in the ui
@@ -12,19 +14,34 @@ function getDeployment(server) {
     let element = document.getElementsByName('deployment_location');
     for (let i = 0; i < element.length; i++) {
         if (element[i].checked) {
+            if (server === "order") {
+                return (OrderReplica++ % 2) === 0 ? "localhost:6001" : "localhost:6003";
+            } else if (server === "catalog") {
+                return (CatalogReplica++ % 2) === 0 ? "localhost:5000" : "localhost:5002";
+            } else if (server === "cache") {
+                return "localhost:3000";
+            }
+        } else {
+            if (server === "order") {
+                return (OrderReplica++ % 2) === 0 ? "192.168.50.101" : "192.168.50.201";
+            } else if (server === "catalog") {
+                return (CatalogReplica++ % 2) === 0 ? "192.168.50.100" : "192.168.50.200";
+            } else if (server === "cache") {
+                return "192.168.50.102";
+            }
             if (element[i].value === "Docker") {
                 if (server === "order") {
-                    return "localhost:6001";
+                    return (OrderReplica++ % 2) === 0 ? "localhost:6001" : "localhost:6003";
                 } else if (server === "catalog") {
-                    return "localhost:5000";
+                    return (CatalogReplica++ % 2) === 0 ? "localhost:5000" : "localhost:5002";
                 } else if (server === "cache") {
                     return "localhost:3000";
                 }
             } else {
                 if (server === "order") {
-                    return "192.168.50.101";
+                    return (OrderReplica++ % 2) === 0 ? "192.168.50.101" : "192.168.50.201";
                 } else if (server === "catalog") {
-                    return "192.168.50.100";
+                    return (CatalogReplica++ % 2) === 0 ? "192.168.50.100" : "192.168.50.200";
                 } else if (server === "cache") {
                     return "192.168.50.102";
                 }
