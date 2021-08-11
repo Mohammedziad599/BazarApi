@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 namespace CacheBenchmarking
 {
     [Orderer(SummaryOrderPolicy.FastestToSlowest)]
-    [SimpleJob(RunStrategy.ColdStart, 100)]
+    [SimpleJob(RunStrategy.ColdStart, 3, 1, 100)]
     [MinColumn]
     [MaxColumn]
     [MeanColumn]
