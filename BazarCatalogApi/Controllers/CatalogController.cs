@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -27,6 +28,7 @@ namespace BazarCatalogApi.Controllers
     public class CatalogController : ControllerBase
     {
         private readonly IHttpClientFactory _clientFactory;
+        private readonly string _hostName;
         private readonly ILogger<CatalogController> _logger;
         private readonly IMapper _mapper;
         private readonly ICatalogRepo _repository;
@@ -39,6 +41,7 @@ namespace BazarCatalogApi.Controllers
             _logger = logger;
             _clientFactory = clientFactory;
             InDocker = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
+            _hostName = Dns.GetHostName();
         }
 
         private bool InDocker { get; }
@@ -249,6 +252,11 @@ namespace BazarCatalogApi.Controllers
 
 
             var client = _clientFactory.CreateClient();
+            _logger.LogInformation($"{DateTime.Now} -- Sending book update to the other replica");
+            await client.PatchAsync(
+                $"http://{(InDocker ? _hostName == "catalog" ? "catalog_replica" : "catalog" : _hostName == "catalog" ? "192.168.50.200" : "192.18.50.100")}/book/update/{id}",
+                new StringContent(JsonSerializer.Serialize(patchDocument)));
+
             await client.PostAsync($"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/invalidateSearches",
                 new StringContent(""));
 
@@ -304,6 +312,12 @@ namespace BazarCatalogApi.Controllers
             }
 
             var client = _clientFactory.CreateClient();
+
+            _logger.LogInformation($"{DateTime.Now} -- Sending book decrement to the other replica");
+
+            await client.PostAsync(
+                $"http://{(InDocker ? _hostName == "catalog" ? "catalog_replica" : "catalog" : _hostName == "catalog" ? "192.168.50.200" : "192.18.50.100")}/book/quantity/dec/{id}",
+                new StringContent(""));
             await client.PostAsync($"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/invalidateSearches",
                 new StringContent(""));
 
@@ -348,6 +362,10 @@ namespace BazarCatalogApi.Controllers
             _repository.IncreaseBookQuantity(id);
 
             var client = _clientFactory.CreateClient();
+            _logger.LogInformation($"{DateTime.Now} -- Sending book increment to the other replica");
+            await client.PostAsync(
+                $"http://{(InDocker ? _hostName == "catalog" ? "catalog_replica" : "catalog" : _hostName == "catalog" ? "192.168.50.200" : "192.18.50.100")}/book/quantity/inc/{id}",
+                new StringContent(""));
             await client.PostAsync($"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/invalidateSearches",
                 new StringContent(""));
 

@@ -29,6 +29,7 @@ namespace BazarOrderApi.Controllers
     public class OrderController : ControllerBase
     {
         private readonly IHttpClientFactory _clientFactory;
+        private readonly string _hostName;
         private readonly ILogger<OrderController> _logger;
         private readonly IMapper _mapper;
         private readonly IOrderRepo _repo;
@@ -43,6 +44,7 @@ namespace BazarOrderApi.Controllers
             _mapper = mapper;
             _logger = logger;
             InDocker = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
+            _hostName = Dns.GetHostName();
         }
 
         private bool InDocker { get; }
@@ -134,6 +136,14 @@ namespace BazarOrderApi.Controllers
             return Ok(_mapper.Map<OrderReadDto>(order));
         }
 
+        [HttpPost("/add/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IActionResult AddOrder(int id, [FromBody] OrderWriteDto orderWriteDto)
+        {
+            _repo.AddOrder(_mapper.Map<Order>(orderWriteDto));
+            return Ok(_mapper.Map<OrderReadDto>(orderWriteDto));
+        }
+
         /// <summary>
         ///     create an order for a book
         /// </summary>
@@ -202,6 +212,11 @@ namespace BazarOrderApi.Controllers
                             };
                             _repo.AddOrder(order);
                             _repo.SaveChanges();
+
+                            _logger.LogInformation($"{DateTime.Now} -- Sending purchase order to the other replica");
+                            await client.PostAsync(
+                                $"http://{(InDocker ? _hostName == "order" ? "order_replica" : "order" : _hostName == "order" ? "192.168.50.201" : "192.18.50.101")}/purchase/add/{id}",
+                                new StringContent(JsonSerializer.Serialize(order)));
 
                             await client.PostAsJsonAsync(
                                 $"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/invalidate/o-{order.Id}",
