@@ -70,6 +70,12 @@ namespace BazarCatalogApi.Controllers
                 return NotFound();
             }
 
+            var client = _clientFactory.CreateClient();
+
+            _logger.LogInformation($"{DateTime.Now} -- Setting Cache[\"books\"]={enumerable}");
+            client.PostAsync($"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/array/books",
+                new StringContent(JsonSerializer.Serialize(enumerable)));
+
             _logger.LogInformation($"{DateTime.Now} -- Result = {JsonSerializer.Serialize(enumerable)}");
 
             return Ok(_mapper.Map<IEnumerable<BookReadDto>>(books));
@@ -101,6 +107,12 @@ namespace BazarCatalogApi.Controllers
                 _logger.LogError($"{DateTime.Now} -- Book with id={id} Not Found");
                 return NotFound();
             }
+
+            var client = _clientFactory.CreateClient();
+
+            _logger.LogInformation($"{DateTime.Now} -- Setting Cache[\"b-{id}\"]={book}");
+            client.PostAsync($"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/b-{book.Id}",
+                new StringContent(JsonSerializer.Serialize(book)));
 
             _logger.LogInformation($"{DateTime.Now} -- Result = {JsonSerializer.Serialize(book)}");
 
@@ -134,7 +146,14 @@ namespace BazarCatalogApi.Controllers
                 return NotFound();
             }
 
-            _logger.LogInformation($"{DateTime.Now} -- Result = {JsonSerializer.Serialize(books)}");
+            var client = _clientFactory.CreateClient();
+
+            var enumerable = books as Book[] ?? books.ToArray();
+            _logger.LogInformation($"{DateTime.Now} -- Setting Cache[\"s-topic-{topic}\"]={enumerable}");
+            client.PostAsync($"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/array/s-topic-{topic}",
+                new StringContent(JsonSerializer.Serialize(enumerable)));
+
+            _logger.LogInformation($"{DateTime.Now} -- Result = {JsonSerializer.Serialize(enumerable)}");
 
             return Ok(_mapper.Map<IEnumerable<BookReadDto>>(books));
         }
@@ -166,7 +185,14 @@ namespace BazarCatalogApi.Controllers
                 return NotFound();
             }
 
-            _logger.LogInformation($"{DateTime.Now} -- Result = {JsonSerializer.Serialize(books)}");
+            var client = _clientFactory.CreateClient();
+
+            var enumerable = books as Book[] ?? books.ToArray();
+            _logger.LogInformation($"{DateTime.Now} -- Setting Cache[\"s-name-{name}\"]={enumerable}");
+            client.PostAsync($"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/array/s-name-{name}",
+                new StringContent(JsonSerializer.Serialize(enumerable)));
+
+            _logger.LogInformation($"{DateTime.Now} -- Result = {JsonSerializer.Serialize(enumerable)}");
 
             return Ok(_mapper.Map<IEnumerable<BookReadDto>>(books));
         }

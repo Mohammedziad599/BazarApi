@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -79,7 +80,14 @@ namespace BazarOrderApi.Controllers
                 return NotFound();
             }
 
-            _logger.LogInformation($"{DateTime.Now} -- Result = {JsonSerializer.Serialize(orders)}");
+            var client = _clientFactory.CreateClient();
+
+            var enumerable = orders as Order[] ?? orders.ToArray();
+            _logger.LogInformation($"{DateTime.Now} -- Setting Cache[\"orders\"]={enumerable}");
+            client.PostAsync($"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/array/orders",
+                new StringContent(JsonSerializer.Serialize(enumerable)));
+
+            _logger.LogInformation($"{DateTime.Now} -- Result = {JsonSerializer.Serialize(enumerable)}");
 
             return Ok(_mapper.Map<IEnumerable<OrderReadDto>>(orders));
         }
@@ -115,6 +123,12 @@ namespace BazarOrderApi.Controllers
                 return NotFound();
             }
 
+            var client = _clientFactory.CreateClient();
+
+            _logger.LogInformation($"{DateTime.Now} -- Setting Cache[\"o-{order.Id}\"]={order}");
+            client.PostAsync($"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/o-{order.Id}",
+                new StringContent(JsonSerializer.Serialize(order)));
+
             _logger.LogInformation($"{DateTime.Now} -- Result = {JsonSerializer.Serialize(order)}");
 
             return Ok(_mapper.Map<OrderReadDto>(order));
@@ -148,6 +162,7 @@ namespace BazarOrderApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> OrderBook(int id)
         {
+            // Used for Testing only
             if (_useCacheInPurchase)
             {
                 _logger.LogInformation($"{DateTime.Now} -- POST /purchase/{id} Requested From {Request.Host.Host}");
