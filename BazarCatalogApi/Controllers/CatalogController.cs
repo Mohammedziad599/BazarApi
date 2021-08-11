@@ -201,6 +201,39 @@ namespace BazarCatalogApi.Controllers
         }
 
         /// <summary>
+        ///     this method used to make a partial update without the http requests to the other services
+        /// </summary>
+        /// <param name="id">the id of the book</param>
+        /// <param name="patchDocument">the json patch document</param>
+        /// <returns>nothing</returns>
+        [HttpPatch("update/patch/{id}")]
+        public IActionResult PartialUpdate(int id, JsonPatchDocument<BookUpdateDto> patchDocument)
+        {
+            _logger.LogInformation($"{DateTime.Now} -- PATCH /book/update/{id} From {Request.Host.Host}");
+
+            var bookFromRepo = _repository.GetBookById(id);
+            if (bookFromRepo == null)
+            {
+                _logger.LogError($"{DateTime.Now} -- Book with id={id} Not Found");
+                return NotFound();
+            }
+
+            var bookToPatch = _mapper.Map<BookUpdateDto>(bookFromRepo);
+            patchDocument.ApplyTo(bookToPatch, ModelState);
+            if (!TryValidateModel(bookToPatch))
+            {
+                _logger.LogError($"{DateTime.Now} -- There is an error in the Received Json Patch");
+                return ValidationProblem(ModelState);
+            }
+
+            _mapper.Map(bookToPatch, bookFromRepo);
+            _repository.UpdateBook(bookFromRepo);
+            _repository.SaveChanges();
+
+            return NoContent();
+        }
+
+        /// <summary>
         ///     update the book partially
         ///     only the Price and Quantity are updatable.
         /// </summary>
@@ -274,6 +307,21 @@ namespace BazarCatalogApi.Controllers
         }
 
         /// <summary>
+        ///     this method is used to do a book decrement without the http calls to the other services.
+        /// </summary>
+        /// <param name="id">the id of the book</param>
+        /// <returns>nothing</returns>
+        [HttpPost("dec/{id}")]
+        public IActionResult DecBook(int id)
+        {
+            if (_repository.GetBookById(id) == null) return NotFound();
+
+            _repository.DecreaseBookQuantity(id);
+
+            return NoContent();
+        }
+
+        /// <summary>
         ///     decrement the book quantity by 1.
         /// </summary>
         /// <remarks>
@@ -316,7 +364,7 @@ namespace BazarCatalogApi.Controllers
             _logger.LogInformation($"{DateTime.Now} -- Sending book decrement to the other replica");
 
             await client.PostAsync(
-                $"http://{(InDocker ? _hostName == "catalog" ? "catalog_replica" : "catalog" : _hostName == "catalog" ? "192.168.50.200" : "192.18.50.100")}/book/quantity/dec/{id}",
+                $"http://{(InDocker ? _hostName == "catalog" ? "catalog_replica" : "catalog" : _hostName == "catalog" ? "192.168.50.200" : "192.18.50.100")}/book/dec/{id}",
                 new StringContent(""));
             await client.PostAsync($"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/invalidateSearches",
                 new StringContent(""));
@@ -330,6 +378,21 @@ namespace BazarCatalogApi.Controllers
                 , new StringContent(""));
 
             _logger.LogInformation($"{DateTime.Now} -- Result = {{}}");
+
+            return NoContent();
+        }
+
+        /// <summary>
+        ///     this method is used to do a book increment without the http calls to the other services.
+        /// </summary>
+        /// <param name="id">the id of the book</param>
+        /// <returns>nothing</returns>
+        [HttpPost("inc/{id}")]
+        public IActionResult IncBook(int id)
+        {
+            if (_repository.GetBookById(id) == null) return NotFound();
+
+            _repository.IncreaseBookQuantity(id);
 
             return NoContent();
         }
@@ -364,7 +427,7 @@ namespace BazarCatalogApi.Controllers
             var client = _clientFactory.CreateClient();
             _logger.LogInformation($"{DateTime.Now} -- Sending book increment to the other replica");
             await client.PostAsync(
-                $"http://{(InDocker ? _hostName == "catalog" ? "catalog_replica" : "catalog" : _hostName == "catalog" ? "192.168.50.200" : "192.18.50.100")}/book/quantity/inc/{id}",
+                $"http://{(InDocker ? _hostName == "catalog" ? "catalog_replica" : "catalog" : _hostName == "catalog" ? "192.168.50.200" : "192.18.50.100")}/book/inc/{id}",
                 new StringContent(""));
             await client.PostAsync($"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/invalidateSearches",
                 new StringContent(""));
