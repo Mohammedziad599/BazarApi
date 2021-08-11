@@ -10,8 +10,8 @@ namespace BazarOrderApi.Profiles
         public OrderProfile()
         {
             CreateMap<Order, OrderReadDto>();
-            CreateMap<Order, OrderWriteDto>();
-            CreateMap<OrderReadDto, OrderWriteDto>();
+            CreateMap<OrderWriteDto, Order>();
+            CreateMap<OrderWriteDto, OrderReadDto>();
         }
     }
 }

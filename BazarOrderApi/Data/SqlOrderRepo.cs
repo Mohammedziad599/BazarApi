@@ -22,7 +22,7 @@ namespace BazarOrderApi.Data
 
         public Order GetOrderById(int id)
         {
-            var order = _context.Orders.FirstOrDefault(_order => _order.Id == id);
+            var order = _context.Orders.FirstOrDefault(order => order.Id == id);
             return order;
         }
 
