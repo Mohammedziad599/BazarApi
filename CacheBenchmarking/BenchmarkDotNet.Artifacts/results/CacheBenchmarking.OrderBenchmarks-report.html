@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='utf-8'/>
+    <title>CacheBenchmarking.OrderBenchmarks-20210814-130811</title>
+
+    <style type="text/css">
+        table {
+            border-collapse: collapse;
+            display: block;
+            width: 100%;
+            overflow: auto;
+        }
+
+        td, th {
+            padding: 6px 13px;
+            border: 1px solid #ddd;
+            text-align: right;
+        }
+
+        tr {
+            background-color: #fff;
+            border-top: 1px solid #ccc;
+        }
+
+        tr:nth-child(even) {
+            background: #f8f8f8;
+        }
+    </style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet=v0.13.0, OS=fedora 34
+Intel Core i7-8550U CPU 1.80GHz (Kaby Lake R), 1 CPU, 8 logical and 4 physical cores
+.NET SDK=5.0.205
+  [Host]     : .NET 5.0.8 (5.0.821.37601), X64 RyuJIT
+  Job-RTWLGZ : .NET 5.0.8 (5.0.821.37601), X64 RyuJIT
+</code></pre>
+<pre><code>IterationCount=100  LaunchCount=3  RunStrategy=ColdStart  
+WarmupCount=50  
+</code></pre>
+
+<table>
+    <thead>
+    <tr>
+        <th> Method</th>
+        <th> Mean</th>
+        <th>Error</th>
+        <th>StdDev</th>
+        <th>Median</th>
+        <th> Min</th>
+        <th> Max</th>
+        <th>Iterations</th>
+        <th>Rank</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>TestGetAllOrdersFromCache</td>
+        <td>974.0 &mu;s</td>
+        <td>838.7 &mu;s</td>
+        <td>4,371.1 &mu;s</td>
+        <td>456.2 &mu;s</td>
+        <td>342.3 &mu;s</td>
+        <td>44,776.8 &mu;s</td>
+        <td>300.0</td>
+        <td>1</td>
+    </tr>
+    <tr>
+        <td>TestGetOrderByIdFromCache</td>
+        <td>974.4 &mu;s</td>
+        <td>846.3 &mu;s</td>
+        <td>4,410.6 &mu;s</td>
+        <td>479.2 &mu;s</td>
+        <td>363.6 &mu;s</td>
+        <td>44,892.7 &mu;s</td>
+        <td>300.0</td>
+        <td>1</td>
+    </tr>
+    <tr>
+        <td>TestGetAllOrderFromOrderServer</td>
+        <td>2,772.6 &mu;s</td>
+        <td>917.4 &mu;s</td>
+        <td>4,781.2 &mu;s</td>
+        <td>2,261.0 &mu;s</td>
+        <td>1,870.2 &mu;s</td>
+        <td>51,749.7 &mu;s</td>
+        <td>300.0</td>
+        <td>2</td>
+    </tr>
+    <tr>
+        <td>TestGetOrderByIdFromOrderServer</td>
+        <td>3,653.9 &mu;s</td>
+        <td>2,392.5 &mu;s</td>
+        <td>12,469.1 &mu;s</td>
+        <td>2,543.5 &mu;s</td>
+        <td>2,065.9 &mu;s</td>
+        <td>209,138.9 &mu;s</td>
+        <td>300.0</td>
+        <td>3</td>
+    </tr>
+    <tr>
+        <td>TestPurchaseBookFromOrderWithCache</td>
+        <td>674,324.0 &mu;s</td>
+        <td>16,630.0 &mu;s</td>
+        <td>86,671.1 &mu;s</td>
+        <td>651,113.9 &mu;s</td>
+        <td>632,588.2 &mu;s</td>
+        <td>1,954,112.6 &mu;s</td>
+        <td>300.0</td>
+        <td>4</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
