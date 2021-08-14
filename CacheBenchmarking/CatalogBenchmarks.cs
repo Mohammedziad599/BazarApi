@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 namespace CacheBenchmarking
 {
     [Orderer(SummaryOrderPolicy.FastestToSlowest)]
-    [SimpleJob(RunStrategy.ColdStart, 3, 1, 100)]
+    [SimpleJob(RunStrategy.ColdStart, 3, 50, 100)]
     [MinColumn]
     [MaxColumn]
     [MeanColumn]
@@ -37,67 +37,85 @@ namespace CacheBenchmarking
         }
 
         [Benchmark]
-        public async Task TestGetByIdWithoutCache()
+        public async Task TestGetByIdFromCatalogServer()
         {
             await Client.GetAsync("http://localhost:5000/book/1");
         }
 
         [Benchmark]
-        public async Task TestGetByIdWithCache()
+        public async Task TestGetByIdFromCache()
         {
             await Client.GetAsync("http://localhost:3000/cache/b-1");
         }
 
         [Benchmark]
-        public async Task TestGetAllWithoutCache()
+        public async Task TestGetAllFromCatalogServer()
         {
             await Client.GetAsync("http://localhost:5000/book");
         }
 
         [Benchmark]
-        public async Task TestGetAllWithCache()
+        public async Task TestGetAllFromCache()
         {
             await Client.GetAsync("http://localhost:3000/cache/books");
         }
 
         [Benchmark]
-        public async Task TestSearchTopicWithoutCache()
+        public async Task TestSearchTopicFromCatalogServer()
         {
             await Client.GetAsync("http://localhost:5000/book/topic/search/dist");
         }
 
         [Benchmark]
-        public async Task TestSearchTopicWithCache()
+        public async Task TestSearchTopicFromCache()
         {
             await Client.GetAsync("http://localhost:3000/cache/s-topic-dist");
         }
 
         [Benchmark]
-        public async Task TestSearchNameWithoutCache()
+        public async Task TestSearchNameFromCatalogServer()
         {
             await Client.GetAsync("http://localhost:5000/book/name/search/for");
         }
 
         [Benchmark]
-        public async Task TestSearchNameWithCache()
+        public async Task TestSearchNameFromCache()
         {
             await Client.GetAsync("http://localhost:3000/cache/s-name-for");
         }
 
         [Benchmark]
-        public async Task TestUpdateQuantityWithoutCache()
+        public async Task TestUpdateQuantityWithRequests()
         {
             await Client.PatchAsync("http://localhost:5000/book/update/1", _requestContent);
         }
 
         [Benchmark]
-        public async Task TestDecrementQuantityWithoutCache()
+        public async Task TestUpdateQuantityWithoutRequests()
+        {
+            await Client.PatchAsync("http://localhost:5000/book/update/patch/1", _requestContent);
+        }
+
+        [Benchmark]
+        public async Task TestDecrementQuantityWithoutRequests()
+        {
+            await Client.PostAsync("http://localhost:5000/book/dec/1", new StringContent(""));
+        }
+
+        [Benchmark]
+        public async Task TestIncrementQuantityWithoutRequests()
+        {
+            await Client.PostAsync("http://localhost:5000/book/inc/1", new StringContent(""));
+        }
+
+        [Benchmark]
+        public async Task TestDecrementQuantityWithRequestsCache()
         {
             await Client.PostAsync("http://localhost:5000/book/quantity/dec/1", new StringContent(""));
         }
 
         [Benchmark]
-        public async Task TestIncrementQuantityWithoutCache()
+        public async Task TestIncrementQuantityWithRequests()
         {
             await Client.PostAsync("http://localhost:5000/book/quantity/inc/1", new StringContent(""));
         }

@@ -8,7 +8,7 @@ using BenchmarkDotNet.Order;
 namespace CacheBenchmarking
 {
     [Orderer(SummaryOrderPolicy.FastestToSlowest)]
-    [SimpleJob(RunStrategy.ColdStart, 3, 1, 100)]
+    [SimpleJob(RunStrategy.ColdStart, 3, 50, 100)]
     [MinColumn]
     [MaxColumn]
     [MeanColumn]
@@ -20,7 +20,7 @@ namespace CacheBenchmarking
         private static readonly HttpClient Client = new();
 
         [Benchmark]
-        public async Task TestGetOrderByIdWithoutCache()
+        public async Task TestGetOrderByIdFromOrderServer()
         {
             await Client.GetAsync("http://localhost:6000/purchase/1");
         }
@@ -32,7 +32,7 @@ namespace CacheBenchmarking
         }
 
         [Benchmark]
-        public async Task TestGetAllOrderWithoutCache()
+        public async Task TestGetAllOrderFromOrderServer()
         {
             await Client.GetAsync("http://localhost:6000/purchase/list");
         }
