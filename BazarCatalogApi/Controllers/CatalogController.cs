@@ -46,9 +46,8 @@ namespace BazarCatalogApi.Controllers
 
         private bool InDocker { get; }
 
-        // TODO Update the Docs
         /// <summary>
-        ///     return all the books stored.
+        ///     return all the books stored, also it will cache the result on the cache server with id = "books".
         /// </summary>
         /// <remarks>
         ///     Sample request:
@@ -85,7 +84,7 @@ namespace BazarCatalogApi.Controllers
         }
 
         /// <summary>
-        ///     returns a specific book.
+        ///     returns a specific book, also it will cache the result on the cache server with id = "b-{id}";
         /// </summary>
         /// <remarks>
         ///     Sample request:
@@ -123,7 +122,8 @@ namespace BazarCatalogApi.Controllers
         }
 
         /// <summary>
-        ///     search for the books using a topic.
+        ///     search for the books using a topic, also it will cache the result on the cache server
+        /// with id = "s-topic-{topic}".
         /// </summary>
         /// <remarks>
         ///     Sample request:
@@ -162,7 +162,8 @@ namespace BazarCatalogApi.Controllers
         }
 
         /// <summary>
-        ///     search for the books using a name.
+        ///     search for the books using a name, also it will cache the result on the cache server
+        /// with id = "s-name-{name}".
         /// </summary>
         /// <remarks>
         ///     Sample request:
@@ -201,7 +202,7 @@ namespace BazarCatalogApi.Controllers
         }
 
         /// <summary>
-        ///     this method used to make a partial update without the http requests to the other services
+        ///     the same as the other update but without calling other services.
         /// </summary>
         /// <param name="id">the id of the book</param>
         /// <param name="patchDocument">the json patch document</param>
@@ -307,7 +308,7 @@ namespace BazarCatalogApi.Controllers
         }
 
         /// <summary>
-        ///     this method is used to do a book decrement without the http calls to the other services.
+        ///     this method will decrement book quantity without the http calls to the other services.
         /// </summary>
         /// <param name="id">the id of the book</param>
         /// <returns>nothing</returns>
@@ -383,7 +384,7 @@ namespace BazarCatalogApi.Controllers
         }
 
         /// <summary>
-        ///     this method is used to do a book increment without the http calls to the other services.
+        ///     this method increment book quantity without the http calls to the other services.
         /// </summary>
         /// <param name="id">the id of the book</param>
         /// <returns>nothing</returns>
