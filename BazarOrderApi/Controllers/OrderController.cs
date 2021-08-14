@@ -86,7 +86,7 @@ namespace BazarOrderApi.Controllers
 
             var enumerable = orders as Order[] ?? orders.ToArray();
             _logger.LogInformation($"{DateTime.Now} -- Setting Cache[\"orders\"]={enumerable}");
-            client.PostAsync($"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/array/orders",
+            client.PostAsync($"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/order/array/orders",
                 new StringContent(JsonSerializer.Serialize(enumerable)));
 
             _logger.LogInformation($"{DateTime.Now} -- Result = {JsonSerializer.Serialize(enumerable)}");
@@ -128,7 +128,7 @@ namespace BazarOrderApi.Controllers
             var client = _clientFactory.CreateClient();
 
             _logger.LogInformation($"{DateTime.Now} -- Setting Cache[\"o-{order.Id}\"]={order}");
-            client.PostAsync($"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/o-{order.Id}",
+            client.PostAsync($"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/order/o-{order.Id}",
                 new StringContent(JsonSerializer.Serialize(order)));
 
             _logger.LogInformation($"{DateTime.Now} -- Result = {JsonSerializer.Serialize(order)}");
