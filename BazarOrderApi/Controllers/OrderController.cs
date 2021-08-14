@@ -70,7 +70,7 @@ namespace BazarOrderApi.Controllers
         [HttpGet("list")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetAllOrders()
+        public async Task<IActionResult> GetAllOrders()
         {
             _logger.LogInformation($"{DateTime.Now} -- GET /purchase/list Requested from {Request.Host.Host}");
 
@@ -85,8 +85,8 @@ namespace BazarOrderApi.Controllers
 
             var enumerable = orders as Order[] ?? orders.ToArray();
             _logger.LogInformation($"{DateTime.Now} -- Setting Cache[\"orders\"]={enumerable}");
-            client.PostAsync($"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/order/array/orders",
-                new StringContent(JsonSerializer.Serialize(enumerable)));
+            await client.PostAsJsonAsync($"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/order/array/orders",
+                enumerable);
 
             _logger.LogInformation($"{DateTime.Now} -- Result = {JsonSerializer.Serialize(enumerable)}");
 
@@ -113,7 +113,7 @@ namespace BazarOrderApi.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetOrderById(int id)
+        public async Task<IActionResult> GetOrderById(int id)
         {
             _logger.LogInformation($"{DateTime.Now} -- GET /purchase/{id} Requested from {Request.Host.Host}");
 
@@ -127,8 +127,8 @@ namespace BazarOrderApi.Controllers
             var client = _clientFactory.CreateClient();
 
             _logger.LogInformation($"{DateTime.Now} -- Setting Cache[\"o-{order.Id}\"]={order}");
-            client.PostAsync($"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/order/o-{order.Id}",
-                new StringContent(JsonSerializer.Serialize(order)));
+            await client.PostAsJsonAsync($"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/order/o-{order.Id}",
+                order);
 
             _logger.LogInformation($"{DateTime.Now} -- Result = {JsonSerializer.Serialize(order)}");
 
