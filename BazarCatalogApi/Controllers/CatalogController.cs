@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -59,7 +60,7 @@ namespace BazarCatalogApi.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetAllBooks()
+        public async Task<IActionResult> GetAllBooks()
         {
             _logger.LogInformation($"{DateTime.Now} -- GET /book/ Requested from {Request.Host.Host}");
 
@@ -75,8 +76,8 @@ namespace BazarCatalogApi.Controllers
             var client = _clientFactory.CreateClient();
 
             _logger.LogInformation($"{DateTime.Now} -- Setting Cache[\"books\"]={enumerable}");
-            client.PostAsync($"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/book/array/books",
-                new StringContent(JsonSerializer.Serialize(enumerable)));
+            await client.PostAsJsonAsync($"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/book/array/books",
+                enumerable);
 
             _logger.LogInformation($"{DateTime.Now} -- Result = {JsonSerializer.Serialize(enumerable)}");
 
@@ -99,7 +100,7 @@ namespace BazarCatalogApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetBookById(int id)
+        public async Task<IActionResult> GetBookById(int id)
         {
             _logger.LogInformation($"{DateTime.Now} -- GET /book/{id} Requested from {Request.Host.Host}");
 
@@ -113,8 +114,8 @@ namespace BazarCatalogApi.Controllers
             var client = _clientFactory.CreateClient();
 
             _logger.LogInformation($"{DateTime.Now} -- Setting Cache[\"b-{id}\"]={book}");
-            client.PostAsync($"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/book/b-{book.Id}",
-                new StringContent(JsonSerializer.Serialize(book)));
+            await client.PostAsJsonAsync($"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/book/b-{book.Id}",
+                book);
 
             _logger.LogInformation($"{DateTime.Now} -- Result = {JsonSerializer.Serialize(book)}");
 
@@ -138,7 +139,7 @@ namespace BazarCatalogApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult SearchForBookByTopic(string topic)
+        public async Task<IActionResult> SearchForBookByTopic(string topic)
         {
             _logger.LogInformation($"{DateTime.Now} -- GET /book/topic/search/{topic} From {Request.Host.Host}");
 
@@ -153,8 +154,9 @@ namespace BazarCatalogApi.Controllers
 
             var enumerable = books as Book[] ?? books.ToArray();
             _logger.LogInformation($"{DateTime.Now} -- Setting Cache[\"s-topic-{topic}\"]={enumerable}");
-            client.PostAsync($"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/book/array/s-topic-{topic}",
-                new StringContent(JsonSerializer.Serialize(enumerable)));
+            await client.PostAsJsonAsync(
+                $"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/book/array/s-topic-{topic}",
+                enumerable);
 
             _logger.LogInformation($"{DateTime.Now} -- Result = {JsonSerializer.Serialize(enumerable)}");
 
@@ -178,7 +180,7 @@ namespace BazarCatalogApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult SearchForBookByName(string name)
+        public async Task<IActionResult> SearchForBookByName(string name)
         {
             _logger.LogInformation($"{DateTime.Now} -- GET /book/name/search/{name} From {Request.Host.Host}");
 
@@ -193,8 +195,9 @@ namespace BazarCatalogApi.Controllers
 
             var enumerable = books as Book[] ?? books.ToArray();
             _logger.LogInformation($"{DateTime.Now} -- Setting Cache[\"s-name-{name}\"]={enumerable}");
-            client.PostAsync($"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/book/array/s-name-{name}",
-                new StringContent(JsonSerializer.Serialize(enumerable)));
+            await client.PostAsJsonAsync(
+                $"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/book/array/s-name-{name}",
+                enumerable);
 
             _logger.LogInformation($"{DateTime.Now} -- Result = {JsonSerializer.Serialize(enumerable)}");
 
