@@ -49,9 +49,8 @@ namespace BazarOrderApi.Controllers
 
         private bool InDocker { get; }
 
-        // TODO Update the Docs
         /// <summary>
-        ///     return all the orders stored.
+        ///     return all the orders stored, also it cache the result on the cache server by id = "orders".
         /// </summary>
         /// <remarks>
         ///     Sample request:
@@ -95,7 +94,7 @@ namespace BazarOrderApi.Controllers
         }
 
         /// <summary>
-        ///     returns a specific order.
+        ///     returns a specific order, also it cache the result on the cache server by key = "o-{id}".
         /// </summary>
         /// <remarks>
         ///     Sample request:
@@ -136,6 +135,13 @@ namespace BazarOrderApi.Controllers
             return Ok(_mapper.Map<OrderReadDto>(order));
         }
 
+        /// <summary>
+        ///     this method used just to add the order as is to the database, used in a replication.
+        /// </summary>
+        /// <param name="id">the id of the order</param>
+        /// <param name="orderWriteDto">the order</param>
+        /// <returns>the order it self</returns>
+        /// <response code="200">success</response>
         [HttpPost("add/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult AddOrder(int id, [FromBody] OrderWriteDto orderWriteDto)
@@ -147,7 +153,7 @@ namespace BazarOrderApi.Controllers
         }
 
         /// <summary>
-        ///     create an order for a book
+        ///     create an order for a book, it first see if the cache has the value then the catalog.
         /// </summary>
         /// <remarks>
         ///     Sample Request:
