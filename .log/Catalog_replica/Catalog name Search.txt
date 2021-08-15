@@ -1,0 +1,18 @@
+catalog_replica_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_replica_1  |       08/15/2021 06:47:04 -- GET /book/name/search/for From localhost
+catalog_replica_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_replica_1  |       08/15/2021 06:47:04 -- Setting Cache["s-name-for"]=BazarCatalogApi.Models.Book[]
+catalog_replica_1  | info: System.Net.Http.HttpClient.Default.LogicalHandler[100]
+catalog_replica_1  |       Start processing HTTP request POST http://cache/cache/book/array/s-name-for
+catalog_replica_1  | info: System.Net.Http.HttpClient.Default.ClientHandler[100]
+catalog_replica_1  |       Sending HTTP request POST http://cache/cache/book/array/s-name-for
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 06:47:04 -- POST /cache/book/array/s-name-for Requested from cache
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 06:47:04 -- setting Cache["s-name-for"] = [{"Id":2,"Name":"RPCs for Noobs","Topic":"distributed systems","Quantity":200,"Price":40},{"Id":4,"Name":"Cooking for the Impatient Undergrad","Topic":"undergraduate school","Quantity":90,"Price":50.36}]
+catalog_replica_1  | info: System.Net.Http.HttpClient.Default.ClientHandler[101]
+catalog_replica_1  |       Received HTTP response headers after 1.2812ms - 200
+catalog_replica_1  | info: System.Net.Http.HttpClient.Default.LogicalHandler[101]
+catalog_replica_1  |       End processing HTTP request after 1.3354ms - 200
+catalog_replica_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_replica_1  |       08/15/2021 06:47:04 -- Result = [{"Id":2,"Name":"RPCs for Noobs","Topic":"distributed systems","Quantity":200,"Price":40},{"Id":4,"Name":"Cooking for the Impatient Undergrad","Topic":"undergraduate school","Quantity":90,"Price":50.36}]

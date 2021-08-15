@@ -1,12 +1,66 @@
-catalog_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
-catalog_1  |       07/18/2021 13:30:31 -- POST /book/quantity/inc/1 From localhost
-catalog_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
-catalog_1  |       07/18/2021 13:30:31 -- Result = {}
+catalog_1          | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_1          |       08/15/2021 06:07:05 -- POST /book/quantity/inc/1 From localhost
+catalog_1          | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_1          |       08/15/2021 06:07:05 -- Sending book increment to the other replica
+catalog_1          | info: System.Net.Http.HttpClient.Default.LogicalHandler[100]
+catalog_1          |       Start processing HTTP request POST http://catalog_replica/book/inc/1
+catalog_1          | info: System.Net.Http.HttpClient.Default.ClientHandler[100]
+catalog_1          |       Sending HTTP request POST http://catalog_replica/book/inc/1
+catalog_1          | info: System.Net.Http.HttpClient.Default.ClientHandler[101]
+catalog_1          |       Received HTTP response headers after 180.4971ms - 204
+catalog_1          | info: System.Net.Http.HttpClient.Default.LogicalHandler[101]
+catalog_1          |       End processing HTTP request after 180.6075ms - 204
+catalog_1          | info: System.Net.Http.HttpClient.Default.LogicalHandler[100]
+catalog_1          |       Start processing HTTP request POST http://cache/cache/invalidateSearches
+catalog_1          | info: System.Net.Http.HttpClient.Default.ClientHandler[100]
+catalog_1          |       Sending HTTP request POST http://cache/cache/invalidateSearches
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 06:07:06 -- POST /cache/invalidateSearches/ Requested from cache
+catalog_1          | info: System.Net.Http.HttpClient.Default.ClientHandler[101]
+catalog_1          |       Received HTTP response headers after 1.5071ms - 200
+catalog_1          | info: System.Net.Http.HttpClient.Default.LogicalHandler[101]
+catalog_1          |       End processing HTTP request after 1.5603ms - 200
+catalog_1          | info: System.Net.Http.HttpClient.Default.LogicalHandler[100]
+catalog_1          |       Start processing HTTP request POST http://cache/cache/invalidate/b-1
+catalog_1          | info: System.Net.Http.HttpClient.Default.ClientHandler[100]
+catalog_1          |       Sending HTTP request POST http://cache/cache/invalidate/b-1
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 06:07:06 -- POST /cache/invalidate/b-1 Requested from cache
+catalog_1          | info: System.Net.Http.HttpClient.Default.ClientHandler[101]
+catalog_1          |       Received HTTP response headers after 0.5468ms - 200
+catalog_1          | info: System.Net.Http.HttpClient.Default.LogicalHandler[101]
+catalog_1          |       End processing HTTP request after 0.5834ms - 200
+catalog_1          | info: System.Net.Http.HttpClient.Default.LogicalHandler[100]
+catalog_1          |       Start processing HTTP request POST http://cache/cache/invalidate/books
+catalog_1          | info: System.Net.Http.HttpClient.Default.ClientHandler[100]
+catalog_1          |       Sending HTTP request POST http://cache/cache/invalidate/books
+catalog_1          | info: System.Net.Http.HttpClient.Default.ClientHandler[101]
+catalog_1          |       Received HTTP response headers after 0.6311ms - 200
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 06:07:06 -- POST /cache/invalidate/books Requested from cache
+catalog_1          | info: System.Net.Http.HttpClient.Default.LogicalHandler[101]
+catalog_1          |       End processing HTTP request after 0.6663ms - 200
+catalog_1          | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_1          |       08/15/2021 06:07:06 -- Result = {}
 
-//This to verify that the increment happend NOTE the prev value was 99
+//This to verify that the increment happend NOTE the prev value was 97
 
-catalog_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
-catalog_1  |       07/18/2021 13:30:35 -- GET /book/1 Requested from localhost
-catalog_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
-catalog_1  |       07/18/2021 13:30:35 -- Result = {"Id":1,"Name":"How to get a good grade in DOS in 40 minutes a day","Topic":"distributed systems","Quantity":100,"Price":60}
+catalog_1          | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_1          |       08/15/2021 06:07:25 -- GET /book/1 Requested from localhost
+catalog_1          | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_1          |       08/15/2021 06:07:25 -- Setting Cache["b-1"]=BazarCatalogApi.Models.Book
+catalog_1          | info: System.Net.Http.HttpClient.Default.LogicalHandler[100]
+catalog_1          |       Start processing HTTP request POST http://cache/cache/book/b-1
+catalog_1          | info: System.Net.Http.HttpClient.Default.ClientHandler[100]
+catalog_1          |       Sending HTTP request POST http://cache/cache/book/b-1
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 06:07:25 -- POST /cache/book/b-1 Requested from cache
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 06:07:25 -- setting Cache["b-1"]={"Id":1,"Name":"How to get a good grade in DOS in 40 minutes a day","Topic":"distributed systems","Quantity":98,"Price":60}
+catalog_1          | info: System.Net.Http.HttpClient.Default.ClientHandler[101]
+catalog_1          |       Received HTTP response headers after 1.3708ms - 200
+catalog_1          | info: System.Net.Http.HttpClient.Default.LogicalHandler[101]
+catalog_1          |       End processing HTTP request after 1.4207ms - 200
+catalog_1          | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_1          |       08/15/2021 06:07:25 -- Result = {"Id":1,"Name":"How to get a good grade in DOS in 40 minutes a day","Topic":"distributed systems","Quantity":98,"Price":60}
 

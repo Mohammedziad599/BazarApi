@@ -1,5 +1,18 @@
-catalog_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
-catalog_1  |       07/18/2021 13:19:49 -- GET /book/1 Requested from localhost
-catalog_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
-catalog_1  |       07/18/2021 13:19:49 -- Result = {"Id":1,"Name":"How to get a good grade in DOS in 40 minutes a day","Topic":"distributed systems","Quantity":96,"Price":60}
-
+catalog_1          | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_1          |       08/15/2021 06:03:57 -- GET /book/1 Requested from localhost
+catalog_1          | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_1          |       08/15/2021 06:03:57 -- Setting Cache["b-1"]=BazarCatalogApi.Models.Book
+catalog_1          | info: System.Net.Http.HttpClient.Default.LogicalHandler[100]
+catalog_1          |       Start processing HTTP request POST http://cache/cache/book/b-1
+catalog_1          | info: System.Net.Http.HttpClient.Default.ClientHandler[100]
+catalog_1          |       Sending HTTP request POST http://cache/cache/book/b-1
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 06:03:57 -- POST /cache/book/b-1 Requested from cache
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 06:03:57 -- setting Cache["b-1"]={"Id":1,"Name":"How to get a good grade in DOS in 40 minutes a day","Topic":"distributed systems","Quantity":98,"Price":60}
+catalog_1          | info: System.Net.Http.HttpClient.Default.ClientHandler[101]
+catalog_1          |       Received HTTP response headers after 1.8066ms - 200
+catalog_1          | info: System.Net.Http.HttpClient.Default.LogicalHandler[101]
+catalog_1          |       End processing HTTP request after 1.857ms - 200
+catalog_1          | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_1          |       08/15/2021 06:03:57 -- Result = {"Id":1,"Name":"How to get a good grade in DOS in 40 minutes a day","Topic":"distributed systems","Quantity":98,"Price":60}

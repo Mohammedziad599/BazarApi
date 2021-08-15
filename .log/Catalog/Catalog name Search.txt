@@ -1,5 +1,18 @@
-catalog_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
-catalog_1  |       07/18/2021 13:23:24 -- GET /book/name/search/for From localhost
-catalog_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
-catalog_1  |       07/18/2021 13:23:25 -- Result = [{"Id":2,"Name":"RPCs for Noobs","Topic":"distributed systems","Quantity":198,"Price":40},{"Id":4,"Name":"Cooking for the Impatient Undergrad","Topic":"undergraduate school","Quantity":90,"Price":50.36}]
-
+catalog_1          | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_1          |       08/15/2021 06:04:30 -- GET /book/name/search/for From localhost
+catalog_1          | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_1          |       08/15/2021 06:04:30 -- Setting Cache["s-name-for"]=BazarCatalogApi.Models.Book[]
+catalog_1          | info: System.Net.Http.HttpClient.Default.LogicalHandler[100]
+catalog_1          |       Start processing HTTP request POST http://cache/cache/book/array/s-name-for
+catalog_1          | info: System.Net.Http.HttpClient.Default.ClientHandler[100]
+catalog_1          |       Sending HTTP request POST http://cache/cache/book/array/s-name-for
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 06:04:30 -- POST /cache/book/array/s-name-for Requested from cache
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 06:04:30 -- setting Cache["s-name-for"] = [{"Id":2,"Name":"RPCs for Noobs","Topic":"distributed systems","Quantity":200,"Price":40},{"Id":4,"Name":"Cooking for the Impatient Undergrad","Topic":"undergraduate school","Quantity":90,"Price":50.36}]
+catalog_1          | info: System.Net.Http.HttpClient.Default.ClientHandler[101]
+catalog_1          |       Received HTTP response headers after 1.8513ms - 200
+catalog_1          | info: System.Net.Http.HttpClient.Default.LogicalHandler[101]
+catalog_1          |       End processing HTTP request after 1.8972ms - 200
+catalog_1          | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_1          |       08/15/2021 06:04:30 -- Result = [{"Id":2,"Name":"RPCs for Noobs","Topic":"distributed systems","Quantity":200,"Price":40},{"Id":4,"Name":"Cooking for the Impatient Undergrad","Topic":"undergraduate school","Quantity":90,"Price":50.36}]

@@ -1,0 +1,24 @@
+//We can see that the cache exist because it has added one minute to it.
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 07:02:15 -- GET /cache/o-1 Requested from localhost
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 07:02:15 -- Adding 1 minutes for Cache["o-1"]
+//this is the result
+{
+    "id": 1,
+    "bookId": 2,
+    "time": "2021-07-08T01:10:08.1468068"
+}
+//Now we invalidate that key "o-1"
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 07:03:07 -- POST /cache/invalidate/o-1 Requested from localhost
+//Now when we try to get the value of "o-1" we got 404 NotFound Status Code.
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 07:04:08 -- GET /cache/o-1 Requested from localhost
+//this is the result
+{
+    "type": "https://tools.ietf.org/html/rfc7231#section-6.5.4",
+    "title": "Not Found",
+    "status": 404,
+    "traceId": "00-3d697a7d79a3cb43a673eb1fdddc002b-6f435c23405ebb40-00"
+}

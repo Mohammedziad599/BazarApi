@@ -1,0 +1,18 @@
+catalog_replica_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_replica_1  |       08/15/2021 06:45:54 -- GET /book/ Requested from localhost
+catalog_replica_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_replica_1  |       08/15/2021 06:45:54 -- Setting Cache["books"]=BazarCatalogApi.Models.Book[]
+catalog_replica_1  | info: System.Net.Http.HttpClient.Default.LogicalHandler[100]
+catalog_replica_1  |       Start processing HTTP request POST http://cache/cache/book/array/books
+catalog_replica_1  | info: System.Net.Http.HttpClient.Default.ClientHandler[100]
+catalog_replica_1  |       Sending HTTP request POST http://cache/cache/book/array/books
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 06:45:54 -- POST /cache/book/array/books Requested from cache
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 06:45:54 -- setting Cache["books"] = [{"Id":1,"Name":"How to get a good grade in DOS in 40 minutes a day","Topic":"distributed systems","Quantity":200,"Price":60},{"Id":2,"Name":"RPCs for Noobs","Topic":"distributed systems","Quantity":200,"Price":40},{"Id":3,"Name":"Xen and the Art of Surviving Undergraduate School","Topic":"undergraduate school","Quantity":30,"Price":39.99},{"Id":4,"Name":"Cooking for the Impatient Undergrad","Topic":"undergraduate school","Quantity":90,"Price":50.36},{"Id":5,"Name":"How to finish Project 3 on time","Topic":"distribured systems","Quantity":20,"Price":30},{"Id":6,"Name":"Why theory classes are so hard","Topic":"undergraduate school","Quantity":10,"Price":5},{"Id":7,"Name":"Spring in the Pioneer Valley","Topic":"nature","Quantity":6,"Price":13.5}]
+catalog_replica_1  | info: System.Net.Http.HttpClient.Default.ClientHandler[101]
+catalog_replica_1  |       Received HTTP response headers after 15.6192ms - 200
+catalog_replica_1  | info: System.Net.Http.HttpClient.Default.LogicalHandler[101]
+catalog_replica_1  |       End processing HTTP request after 15.7079ms - 200
+catalog_replica_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_replica_1  |       08/15/2021 06:45:54 -- Result = [{"Id":1,"Name":"How to get a good grade in DOS in 40 minutes a day","Topic":"distributed systems","Quantity":200,"Price":60},{"Id":2,"Name":"RPCs for Noobs","Topic":"distributed systems","Quantity":200,"Price":40},{"Id":3,"Name":"Xen and the Art of Surviving Undergraduate School","Topic":"undergraduate school","Quantity":30,"Price":39.99},{"Id":4,"Name":"Cooking for the Impatient Undergrad","Topic":"undergraduate school","Quantity":90,"Price":50.36},{"Id":5,"Name":"How to finish Project 3 on time","Topic":"distribured systems","Quantity":20,"Price":30},{"Id":6,"Name":"Why theory classes are so hard","Topic":"undergraduate school","Quantity":10,"Price":5},{"Id":7,"Name":"Spring in the Pioneer Valley","Topic":"nature","Quantity":6,"Price":13.5}]

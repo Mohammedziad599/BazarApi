@@ -1,5 +1,19 @@
-order_1    | info: BazarOrderApi.Controllers.OrderController[0]
-order_1    |       07/18/2021 13:39:26 -- GET /purchase/list Requested from localhost
-order_1    | info: BazarOrderApi.Controllers.OrderController[0]
-order_1    |       07/18/2021 13:39:27 -- Result = [{"Id":1,"BookId":2,"Time":"2021-07-08T01:10:08.1468068"},{"Id":2,"BookId":2,"Time":"2021-07-08T01:10:26.0740454"},{"Id":3,"BookId":1,"Time":"2021-07-08T11:38:40.2611329"},{"Id":4,"BookId":1,"Time":"2021-07-18T13:15:43.9973122"}]
-
+order_1            | info: BazarOrderApi.Controllers.OrderController[0]
+order_1            |       08/15/2021 05:52:59 -- GET /purchase/list Requested from localhost
+order_1            | info: BazarOrderApi.Controllers.OrderController[0]
+order_1            |       08/15/2021 05:53:00 -- Setting Cache["orders"]=BazarOrderApi.Models.Order[]
+order_1            | info: System.Net.Http.HttpClient.Default.LogicalHandler[100]
+order_1            |       Start processing HTTP request POST http://cache/cache/order/array/orders
+order_1            | info: System.Net.Http.HttpClient.Default.ClientHandler[100]
+order_1            |       Sending HTTP request POST http://cache/cache/order/array/orders
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 05:53:01 -- POST /cache/order/array/orders Requested from cache
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 05:53:01 -- setting Cache["orders"] = [{"Id":1,"BookId":2,"Time":"2021-07-08T01:10:08.1468068"},{"Id":2,"BookId":2,"Time":"2021-07-08T01:10:26.0740454"},{"Id":3,"BookId":1,"Time":"2021-07-08T11:38:40.2611329"}]
+order_1            | info: System.Net.Http.HttpClient.Default.ClientHandler[101]
+order_1            |       Received HTTP response headers after 260.5855ms - 200
+order_1            | info: System.Net.Http.HttpClient.Default.LogicalHandler[101]
+order_1            |       End processing HTTP request after 268.8691ms - 200
+order_1            | info: BazarOrderApi.Controllers.OrderController[0]
+order_1            |       08/15/2021 05:53:01 -- Result = [{"Id":1,"BookId":2,"Time":"2021-07-08T01:10:08.1468068"},{"Id":2,"BookId":2,"Time":"2021-07-08T01:10:26.0740454"},{"Id":3,"BookId":1,"Time":"2021-07-08T11:38:40.2611329"}]
+s

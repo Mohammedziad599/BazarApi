@@ -3,6 +3,7 @@ version: "3"
 services:
   catalog:
     build: ./BazarCatalogApi
+    hostname: catalog
     ports:
       - "5000:80"
       - "5001:443"
@@ -12,29 +13,81 @@ services:
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/root/.aspnet/https/BazarCatalogApi.pfx
       - DOTNET_RUNNING_IN_CONTAINER=true
     volumes:
-      - ./BazarCatalogApi/Books.db:/app/Books.db
       - ./BazarCatalogApi.pfx:/root/.aspnet/https/BazarCatalogApi.pfx
     networks:
       - network
+    depends_on:
+      - cache
+  catalog_replica:
+    build: ./BazarCatalogApi
+    hostname: catalog_replica
+    ports:
+      - "5002:80"
+      - "5003:443"
+    environment:
+      - ASPNETCORE_URLS=https://+;http://+
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=mohammed
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/root/.aspnet/https/BazarCatalogApi.pfx
+      - DOTNET_RUNNING_IN_CONTAINER=true
+    volumes:
+      - ./BazarCatalogApi.pfx:/root/.aspnet/https/BazarCatalogApi.pfx
+    networks:
+      - network
+    depends_on:
+      - cache
   order:
     build: ./BazarOrderApi
+    hostname: order
     ports:
-    - "6000:80"
-    - "6001:443"
+      - "6000:80"
+      - "6001:443"
     environment:
       - ASPNETCORE_URLS=https://+;http://+
       - ASPNETCORE_Kestrel__Certificates__Default__Password=mohammed
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/root/.aspnet/https/BazarOrderApi.pfx
       - DOTNET_RUNNING_IN_CONTAINER=true
     volumes:
-      - ./BazarOrderApi/Orders.db:/app/Orders.db
       - ./BazarOrderApi.pfx:/root/.aspnet/https/BazarOrderApi.pfx
     networks:
       - network
     depends_on:
+      - cache
       - catalog
+  order_replica:
+    build: ./BazarOrderApi
+    hostname: order_replica
+    ports:
+      - "6002:80"
+      - "6003:443"
+    environment:
+      - ASPNETCORE_URLS=https://+;http://+
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=mohammed
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/root/.aspnet/https/BazarOrderApi.pfx
+      - DOTNET_RUNNING_IN_CONTAINER=true
+    volumes:
+      - ./BazarOrderApi.pfx:/root/.aspnet/https/BazarOrderApi.pfx
+    networks:
+      - network
+    depends_on:
+      - cache
+      - catalog
+  cache:
+    build: ./BazarCacheApi
+    ports:
+      - "3000:80"
+      - "3001:443"
+    environment:
+      - ASPNETCORE_URLS=https://+;http://+
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=mohammed
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/root/.aspnet/https/BazarCacheApi.pfx
+      - DOTNET_RUNNING_IN_CONTAINER=true
+    volumes:
+      - ./BazarCacheApi.pfx:/root/.aspnet/https/BazarCacheApi.pfx
+    networks:
+      - network
   httpd:
     image: httpd:2
+    hostname: httpd
     ports:
       - "4000:80"
     volumes:

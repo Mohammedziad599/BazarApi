@@ -1,0 +1,89 @@
+catalog_replica_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_replica_1  |       08/15/2021 06:47:58 -- POST /book/quantity/dec/1 From localhost
+catalog_replica_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_replica_1  |       08/15/2021 06:47:58 -- Sending book decrement to the other replica
+catalog_replica_1  | info: System.Net.Http.HttpClient.Default.LogicalHandler[100]
+catalog_replica_1  |       Start processing HTTP request POST http://catalog/book/dec/1
+catalog_replica_1  | info: System.Net.Http.HttpClient.Default.ClientHandler[100]
+catalog_replica_1  |       Sending HTTP request POST http://catalog/book/dec/1
+catalog_replica_1  | info: System.Net.Http.HttpClient.Default.ClientHandler[101]
+catalog_replica_1  |       Received HTTP response headers after 192.6723ms - 204
+catalog_replica_1  | info: System.Net.Http.HttpClient.Default.LogicalHandler[101]
+catalog_replica_1  |       End processing HTTP request after 192.9082ms - 204
+catalog_replica_1  | info: System.Net.Http.HttpClient.Default.LogicalHandler[100]
+catalog_replica_1  |       Start processing HTTP request POST http://cache/cache/invalidateSearches
+catalog_replica_1  | info: System.Net.Http.HttpClient.Default.ClientHandler[100]
+catalog_replica_1  |       Sending HTTP request POST http://cache/cache/invalidateSearches
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 06:47:58 -- POST /cache/invalidateSearches/ Requested from cache
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 06:47:58 -- Removing Cache["s-name-for"]
+catalog_replica_1  | info: System.Net.Http.HttpClient.Default.ClientHandler[101]
+catalog_replica_1  |       Received HTTP response headers after 6.9178ms - 200
+catalog_replica_1  | info: System.Net.Http.HttpClient.Default.LogicalHandler[101]
+catalog_replica_1  |       End processing HTTP request after 7.093ms - 200
+catalog_replica_1  | info: System.Net.Http.HttpClient.Default.LogicalHandler[100]
+catalog_replica_1  |       Start processing HTTP request POST http://cache/cache/invalidate/b-1
+catalog_replica_1  | info: System.Net.Http.HttpClient.Default.ClientHandler[100]
+catalog_replica_1  |       Sending HTTP request POST http://cache/cache/invalidate/b-1
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 06:47:58 -- POST /cache/invalidate/b-1 Requested from cache
+catalog_replica_1  | info: System.Net.Http.HttpClient.Default.ClientHandler[101]
+catalog_replica_1  |       Received HTTP response headers after 2.1612ms - 200
+catalog_replica_1  | info: System.Net.Http.HttpClient.Default.LogicalHandler[101]
+catalog_replica_1  |       End processing HTTP request after 2.3257ms - 200
+catalog_replica_1  | info: System.Net.Http.HttpClient.Default.LogicalHandler[100]
+catalog_replica_1  |       Start processing HTTP request POST http://cache/cache/invalidate/books
+catalog_replica_1  | info: System.Net.Http.HttpClient.Default.ClientHandler[100]
+catalog_replica_1  |       Sending HTTP request POST http://cache/cache/invalidate/books
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 06:47:58 -- POST /cache/invalidate/books Requested from cache
+catalog_replica_1  | info: System.Net.Http.HttpClient.Default.ClientHandler[101]
+catalog_replica_1  |       Received HTTP response headers after 2.1244ms - 200
+catalog_replica_1  | info: System.Net.Http.HttpClient.Default.LogicalHandler[101]
+catalog_replica_1  |       End processing HTTP request after 2.3833ms - 200
+catalog_replica_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_replica_1  |       08/15/2021 06:47:58 -- Result = {}
+
+//this to verify that the decrement happend NOTE: the previous value was 200, this result is gotten from the other replica
+
+catalog_1          | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_1          |       08/15/2021 06:49:19 -- GET /book/1 Requested from localhost
+catalog_1          | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_1          |       08/15/2021 06:49:19 -- Setting Cache["b-1"]=BazarCatalogApi.Models.Book
+catalog_1          | info: System.Net.Http.HttpClient.Default.LogicalHandler[100]
+catalog_1          |       Start processing HTTP request POST http://cache/cache/book/b-1
+catalog_1          | info: System.Net.Http.HttpClient.Default.ClientHandler[100]
+catalog_1          |       Sending HTTP request POST http://cache/cache/book/b-1
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 06:49:19 -- POST /cache/book/b-1 Requested from cache
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 06:49:19 -- setting Cache["b-1"]={"Id":1,"Name":"How to get a good grade in DOS in 40 minutes a day","Topic":"distributed systems","Quantity":199,"Price":60}
+catalog_1          | info: System.Net.Http.HttpClient.Default.ClientHandler[101]
+catalog_1          |       Received HTTP response headers after 1.9831ms - 200
+catalog_1          | info: System.Net.Http.HttpClient.Default.LogicalHandler[101]
+catalog_1          |       End processing HTTP request after 2.0446ms - 200
+catalog_1          | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_1          |       08/15/2021 06:49:19 -- Result = {"Id":1,"Name":"How to get a good grade in DOS in 40 minutes a day","Topic":"distributed systems","Quantity":199,"Price":60}
+
+// now from the same replica
+
+catalog_replica_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_replica_1  |       08/15/2021 06:49:47 -- GET /book/1 Requested from localhost
+catalog_replica_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_replica_1  |       08/15/2021 06:49:47 -- Setting Cache["b-1"]=BazarCatalogApi.Models.Book
+catalog_replica_1  | info: System.Net.Http.HttpClient.Default.LogicalHandler[100]
+catalog_replica_1  |       Start processing HTTP request POST http://cache/cache/book/b-1
+catalog_replica_1  | info: System.Net.Http.HttpClient.Default.ClientHandler[100]
+catalog_replica_1  |       Sending HTTP request POST http://cache/cache/book/b-1
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 06:49:47 -- POST /cache/book/b-1 Requested from cache
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 06:49:47 -- setting Cache["b-1"]={"Id":1,"Name":"How to get a good grade in DOS in 40 minutes a day","Topic":"distributed systems","Quantity":199,"Price":60}
+catalog_replica_1  | info: System.Net.Http.HttpClient.Default.ClientHandler[101]
+catalog_replica_1  |       Received HTTP response headers after 4.4713ms - 200
+catalog_replica_1  | info: System.Net.Http.HttpClient.Default.LogicalHandler[101]
+catalog_replica_1  |       End processing HTTP request after 4.5565ms - 200
+catalog_replica_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_replica_1  |       08/15/2021 06:49:47 -- Result = {"Id":1,"Name":"How to get a good grade in DOS in 40 minutes a day","Topic":"distributed systems","Quantity":199,"Price":60}
+

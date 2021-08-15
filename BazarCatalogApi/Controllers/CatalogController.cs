@@ -1,7 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Text;
+using System.Threading.Tasks;
 
 using AutoMapper;
 
@@ -14,6 +18,10 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
+using Newtonsoft.Json;
+
+using JsonSerializer = System.Text.Json.JsonSerializer;
+
 namespace BazarCatalogApi.Controllers
 {
     /// <summary>
@@ -24,19 +32,27 @@ namespace BazarCatalogApi.Controllers
     [ApiController]
     public class CatalogController : ControllerBase
     {
+        private readonly IHttpClientFactory _clientFactory;
+        private readonly string _hostName;
         private readonly ILogger<CatalogController> _logger;
         private readonly IMapper _mapper;
         private readonly ICatalogRepo _repository;
 
-        public CatalogController(ICatalogRepo repository, IMapper mapper, ILogger<CatalogController> logger)
+        public CatalogController(ICatalogRepo repository, IMapper mapper, ILogger<CatalogController> logger,
+            IHttpClientFactory clientFactory)
         {
             _repository = repository;
             _mapper = mapper;
             _logger = logger;
+            _clientFactory = clientFactory;
+            InDocker = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
+            _hostName = Dns.GetHostName();
         }
 
+        private bool InDocker { get; }
+
         /// <summary>
-        ///     return all the books stored.
+        ///     return all the books stored, also it will cache the result on the cache server with id = "books".
         /// </summary>
         /// <remarks>
         ///     Sample request:
@@ -48,7 +64,7 @@ namespace BazarCatalogApi.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetAllBooks()
+        public async Task<IActionResult> GetAllBooks()
         {
             _logger.LogInformation($"{DateTime.Now} -- GET /book/ Requested from {Request.Host.Host}");
 
@@ -61,13 +77,19 @@ namespace BazarCatalogApi.Controllers
                 return NotFound();
             }
 
+            var client = _clientFactory.CreateClient();
+
+            _logger.LogInformation($"{DateTime.Now} -- Setting Cache[\"books\"]={enumerable}");
+            await client.PostAsJsonAsync($"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/book/array/books",
+                enumerable);
+
             _logger.LogInformation($"{DateTime.Now} -- Result = {JsonSerializer.Serialize(enumerable)}");
 
             return Ok(_mapper.Map<IEnumerable<BookReadDto>>(books));
         }
 
         /// <summary>
-        ///     returns a specific book.
+        ///     returns a specific book, also it will cache the result on the cache server with id = "b-{id}";
         /// </summary>
         /// <remarks>
         ///     Sample request:
@@ -82,7 +104,7 @@ namespace BazarCatalogApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetBookById(int id)
+        public async Task<IActionResult> GetBookById(int id)
         {
             _logger.LogInformation($"{DateTime.Now} -- GET /book/{id} Requested from {Request.Host.Host}");
 
@@ -93,13 +115,20 @@ namespace BazarCatalogApi.Controllers
                 return NotFound();
             }
 
+            var client = _clientFactory.CreateClient();
+
+            _logger.LogInformation($"{DateTime.Now} -- Setting Cache[\"b-{id}\"]={book}");
+            await client.PostAsJsonAsync($"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/book/b-{book.Id}",
+                book);
+
             _logger.LogInformation($"{DateTime.Now} -- Result = {JsonSerializer.Serialize(book)}");
 
             return Ok(_mapper.Map<BookReadDto>(book));
         }
 
         /// <summary>
-        ///     search for the books using a topic.
+        ///     search for the books using a topic, also it will cache the result on the cache server
+        /// with id = "s-topic-{topic}".
         /// </summary>
         /// <remarks>
         ///     Sample request:
@@ -114,7 +143,7 @@ namespace BazarCatalogApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult SearchForBookByTopic(string topic)
+        public async Task<IActionResult> SearchForBookByTopic(string topic)
         {
             _logger.LogInformation($"{DateTime.Now} -- GET /book/topic/search/{topic} From {Request.Host.Host}");
 
@@ -125,13 +154,22 @@ namespace BazarCatalogApi.Controllers
                 return NotFound();
             }
 
-            _logger.LogInformation($"{DateTime.Now} -- Result = {JsonSerializer.Serialize(books)}");
+            var client = _clientFactory.CreateClient();
+
+            var enumerable = books as Book[] ?? books.ToArray();
+            _logger.LogInformation($"{DateTime.Now} -- Setting Cache[\"s-topic-{topic}\"]={enumerable}");
+            await client.PostAsJsonAsync(
+                $"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/book/array/s-topic-{topic}",
+                enumerable);
+
+            _logger.LogInformation($"{DateTime.Now} -- Result = {JsonSerializer.Serialize(enumerable)}");
 
             return Ok(_mapper.Map<IEnumerable<BookReadDto>>(books));
         }
 
         /// <summary>
-        ///     search for the books using a name.
+        ///     search for the books using a name, also it will cache the result on the cache server
+        /// with id = "s-name-{name}".
         /// </summary>
         /// <remarks>
         ///     Sample request:
@@ -146,7 +184,7 @@ namespace BazarCatalogApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult SearchForBookByName(string name)
+        public async Task<IActionResult> SearchForBookByName(string name)
         {
             _logger.LogInformation($"{DateTime.Now} -- GET /book/name/search/{name} From {Request.Host.Host}");
 
@@ -157,9 +195,50 @@ namespace BazarCatalogApi.Controllers
                 return NotFound();
             }
 
-            _logger.LogInformation($"{DateTime.Now} -- Result = {JsonSerializer.Serialize(books)}");
+            var client = _clientFactory.CreateClient();
+
+            var enumerable = books as Book[] ?? books.ToArray();
+            _logger.LogInformation($"{DateTime.Now} -- Setting Cache[\"s-name-{name}\"]={enumerable}");
+            await client.PostAsJsonAsync(
+                $"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/book/array/s-name-{name}",
+                enumerable);
+
+            _logger.LogInformation($"{DateTime.Now} -- Result = {JsonSerializer.Serialize(enumerable)}");
 
             return Ok(_mapper.Map<IEnumerable<BookReadDto>>(books));
+        }
+
+        /// <summary>
+        ///     the same as the other update but without calling other services.
+        /// </summary>
+        /// <param name="id">the id of the book</param>
+        /// <param name="patchDocument">the json patch document</param>
+        /// <returns>nothing</returns>
+        [HttpPatch("update/patch/{id}")]
+        public IActionResult PartialUpdate(int id, JsonPatchDocument<BookUpdateDto> patchDocument)
+        {
+            _logger.LogInformation($"{DateTime.Now} -- PATCH /book/update/{id} From {Request.Host.Host}");
+
+            var bookFromRepo = _repository.GetBookById(id);
+            if (bookFromRepo == null)
+            {
+                _logger.LogError($"{DateTime.Now} -- Book with id={id} Not Found");
+                return NotFound();
+            }
+
+            var bookToPatch = _mapper.Map<BookUpdateDto>(bookFromRepo);
+            patchDocument.ApplyTo(bookToPatch, ModelState);
+            if (!TryValidateModel(bookToPatch))
+            {
+                _logger.LogError($"{DateTime.Now} -- There is an error in the Received Json Patch");
+                return ValidationProblem(ModelState);
+            }
+
+            _mapper.Map(bookToPatch, bookFromRepo);
+            _repository.UpdateBook(bookFromRepo);
+            _repository.SaveChanges();
+
+            return NoContent();
         }
 
         /// <summary>
@@ -189,7 +268,7 @@ namespace BazarCatalogApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status405MethodNotAllowed)]
-        public IActionResult UpdateBookPartially(int id, JsonPatchDocument<BookUpdateDto> patchDocument)
+        public async Task<IActionResult> UpdateBookPartially(int id, JsonPatchDocument<BookUpdateDto> patchDocument)
         {
             _logger.LogInformation($"{DateTime.Now} -- PATCH /book/update/{id} From {Request.Host.Host}");
 
@@ -212,7 +291,41 @@ namespace BazarCatalogApi.Controllers
             _repository.UpdateBook(bookFromRepo);
             _repository.SaveChanges();
 
+
+            var client = _clientFactory.CreateClient();
+            _logger.LogInformation($"{DateTime.Now} -- Sending book update to the other replica");
+            await client.PatchAsync(
+                $"http://{(InDocker ? _hostName == "catalog" ? "catalog_replica" : "catalog" : _hostName == "catalog" ? "192.168.50.200" : "192.18.50.100")}/book/update/patch/{id}",
+                new StringContent(JsonConvert.SerializeObject(patchDocument), Encoding.UTF8,
+                    "application/json-patch+json"));
+
+            await client.PostAsync($"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/invalidateSearches",
+                new StringContent(""));
+
+            await client.PostAsync(
+                $"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/invalidate/b-{id}"
+                , new StringContent(""));
+
+            await client.PostAsync(
+                $"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/invalidate/books"
+                , new StringContent(""));
+
             _logger.LogInformation($"{DateTime.Now} -- Result = {{}}");
+
+            return NoContent();
+        }
+
+        /// <summary>
+        ///     this method will decrement book quantity without the http calls to the other services.
+        /// </summary>
+        /// <param name="id">the id of the book</param>
+        /// <returns>nothing</returns>
+        [HttpPost("dec/{id}")]
+        public IActionResult DecBook(int id)
+        {
+            if (_repository.GetBookById(id) == null) return NotFound();
+
+            _repository.DecreaseBookQuantity(id);
 
             return NoContent();
         }
@@ -236,7 +349,7 @@ namespace BazarCatalogApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status405MethodNotAllowed)]
-        public IActionResult DecrementBookQuantity(int id)
+        public async Task<IActionResult> DecrementBookQuantity(int id)
         {
             _logger.LogInformation($"{DateTime.Now} -- POST /book/quantity/dec/{id} From {Request.Host.Host}");
 
@@ -255,7 +368,40 @@ namespace BazarCatalogApi.Controllers
                     400, $"Cannot Purchase Book with id={id}");
             }
 
+            var client = _clientFactory.CreateClient();
+
+            _logger.LogInformation($"{DateTime.Now} -- Sending book decrement to the other replica");
+
+            await client.PostAsync(
+                $"http://{(InDocker ? _hostName == "catalog" ? "catalog_replica" : "catalog" : _hostName == "catalog" ? "192.168.50.200" : "192.18.50.100")}/book/dec/{id}",
+                new StringContent(""));
+            await client.PostAsync($"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/invalidateSearches",
+                new StringContent(""));
+
+            await client.PostAsync(
+                $"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/invalidate/b-{id}"
+                , new StringContent(""));
+
+            await client.PostAsync(
+                $"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/invalidate/books"
+                , new StringContent(""));
+
             _logger.LogInformation($"{DateTime.Now} -- Result = {{}}");
+
+            return NoContent();
+        }
+
+        /// <summary>
+        ///     this method increment book quantity without the http calls to the other services.
+        /// </summary>
+        /// <param name="id">the id of the book</param>
+        /// <returns>nothing</returns>
+        [HttpPost("inc/{id}")]
+        public IActionResult IncBook(int id)
+        {
+            if (_repository.GetBookById(id) == null) return NotFound();
+
+            _repository.IncreaseBookQuantity(id);
 
             return NoContent();
         }
@@ -279,13 +425,29 @@ namespace BazarCatalogApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status405MethodNotAllowed)]
-        public IActionResult IncrementBookQuantity(int id)
+        public async Task<IActionResult> IncrementBookQuantity(int id)
         {
             _logger.LogInformation($"{DateTime.Now} -- POST /book/quantity/inc/{id} From {Request.Host.Host}");
 
             if (_repository.GetBookById(id) == null) return NotFound();
 
             _repository.IncreaseBookQuantity(id);
+
+            var client = _clientFactory.CreateClient();
+            _logger.LogInformation($"{DateTime.Now} -- Sending book increment to the other replica");
+            await client.PostAsync(
+                $"http://{(InDocker ? _hostName == "catalog" ? "catalog_replica" : "catalog" : _hostName == "catalog" ? "192.168.50.200" : "192.18.50.100")}/book/inc/{id}",
+                new StringContent(""));
+            await client.PostAsync($"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/invalidateSearches",
+                new StringContent(""));
+
+            await client.PostAsync(
+                $"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/invalidate/b-{id}"
+                , new StringContent(""));
+
+            await client.PostAsync(
+                $"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/invalidate/books"
+                , new StringContent(""));
 
             _logger.LogInformation($"{DateTime.Now} -- Result = {{}}");
 
