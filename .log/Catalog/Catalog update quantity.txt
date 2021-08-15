@@ -8,18 +8,93 @@
 //]
 
 // Server Log.
+catalog_1          | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_1          |       08/15/2021 06:42:34 -- PATCH /book/update/1 From localhost
+catalog_1          | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_1          |       08/15/2021 06:42:35 -- Sending book update to the other replica
+catalog_1          | info: System.Net.Http.HttpClient.Default.LogicalHandler[100]
+catalog_1          |       Start processing HTTP request PATCH http://catalog_replica/book/update/patch/1
+catalog_1          | info: System.Net.Http.HttpClient.Default.ClientHandler[100]
+catalog_1          |       Sending HTTP request PATCH http://catalog_replica/book/update/patch/1
+catalog_replica_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_replica_1  |       08/15/2021 06:42:35 -- PATCH /book/update/1 From catalog_replica
+catalog_1          | info: System.Net.Http.HttpClient.Default.ClientHandler[101]
+catalog_1          |       Received HTTP response headers after 1752.8186ms - 204
+catalog_1          | info: System.Net.Http.HttpClient.Default.LogicalHandler[101]
+catalog_1          |       End processing HTTP request after 1763.164ms - 204
+catalog_1          | info: System.Net.Http.HttpClient.Default.LogicalHandler[100]
+catalog_1          |       Start processing HTTP request POST http://cache/cache/invalidateSearches
+catalog_1          | info: System.Net.Http.HttpClient.Default.ClientHandler[100]
+catalog_1          |       Sending HTTP request POST http://cache/cache/invalidateSearches
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 06:42:37 -- POST /cache/invalidateSearches/ Requested from cache
+catalog_1          | info: System.Net.Http.HttpClient.Default.ClientHandler[101]
+catalog_1          |       Received HTTP response headers after 131.5216ms - 200
+catalog_1          | info: System.Net.Http.HttpClient.Default.LogicalHandler[101]
+catalog_1          |       End processing HTTP request after 131.6442ms - 200
+catalog_1          | info: System.Net.Http.HttpClient.Default.LogicalHandler[100]
+catalog_1          |       Start processing HTTP request POST http://cache/cache/invalidate/b-1
+catalog_1          | info: System.Net.Http.HttpClient.Default.ClientHandler[100]
+catalog_1          |       Sending HTTP request POST http://cache/cache/invalidate/b-1
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 06:42:37 -- POST /cache/invalidate/b-1 Requested from cache
+catalog_1          | info: System.Net.Http.HttpClient.Default.ClientHandler[101]
+catalog_1          |       Received HTTP response headers after 25.7891ms - 200
+catalog_1          | info: System.Net.Http.HttpClient.Default.LogicalHandler[101]
+catalog_1          |       End processing HTTP request after 25.8618ms - 200
+catalog_1          | info: System.Net.Http.HttpClient.Default.LogicalHandler[100]
+catalog_1          |       Start processing HTTP request POST http://cache/cache/invalidate/books
+catalog_1          | info: System.Net.Http.HttpClient.Default.ClientHandler[100]
+catalog_1          |       Sending HTTP request POST http://cache/cache/invalidate/books
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 06:42:37 -- POST /cache/invalidate/books Requested from cache
+catalog_1          | info: System.Net.Http.HttpClient.Default.ClientHandler[101]
+catalog_1          |       Received HTTP response headers after 1.4862ms - 200
+catalog_1          | info: System.Net.Http.HttpClient.Default.LogicalHandler[101]
+catalog_1          |       End processing HTTP request after 1.5447ms - 200
+catalog_1          | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_1          |       08/15/2021 06:42:37 -- Result = {}
 
-catalog_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
-catalog_1  |       07/18/2021 13:25:55 -- PATCH /book/update/1 From localhost
-catalog_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
-catalog_1  |       07/18/2021 13:25:55 -- Result = {}
 
+//this to verify that the update succeed NOTE: the previous value was 100 this from the replica to see that the update is done there too
 
+catalog_replica_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_replica_1  |       08/15/2021 06:44:13 -- GET /book/1 Requested from localhost
+catalog_replica_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_replica_1  |       08/15/2021 06:44:13 -- Setting Cache["b-1"]=BazarCatalogApi.Models.Book
+catalog_replica_1  | info: System.Net.Http.HttpClient.Default.LogicalHandler[100]
+catalog_replica_1  |       Start processing HTTP request POST http://cache/cache/book/b-1
+catalog_replica_1  | info: System.Net.Http.HttpClient.Default.ClientHandler[100]
+catalog_replica_1  |       Sending HTTP request POST http://cache/cache/book/b-1
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 06:44:13 -- POST /cache/book/b-1 Requested from cache
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 06:44:13 -- setting Cache["b-1"]={"Id":1,"Name":"How to get a good grade in DOS in 40 minutes a day","Topic":"distributed systems","Quantity":200,"Price":60}
+catalog_replica_1  | info: System.Net.Http.HttpClient.Default.ClientHandler[101]
+catalog_replica_1  |       Received HTTP response headers after 3.3938ms - 200
+catalog_replica_1  | info: System.Net.Http.HttpClient.Default.LogicalHandler[101]
+catalog_replica_1  |       End processing HTTP request after 3.5115ms - 200
+catalog_replica_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_replica_1  |       08/15/2021 06:44:13 -- Result = {"Id":1,"Name":"How to get a good grade in DOS in 40 minutes a day","Topic":"distributed systems","Quantity":200,"Price":60}
 
-//this to verify that the update succeed NOTE: the previous value was 96
+// this from the same service.
 
-catalog_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
-catalog_1  |       07/18/2021 13:27:03 -- GET /book/1 Requested from localhost
-catalog_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
-catalog_1  |       07/18/2021 13:27:03 -- Result = {"Id":1,"Name":"How to get a good grade in DOS in 40 minutes a day","Topic":"distributed systems","Quantity":100,"Price":60}
+catalog_1          | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_1          |       08/15/2021 06:45:02 -- GET /book/1 Requested from localhost
+catalog_1          | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_1          |       08/15/2021 06:45:02 -- Setting Cache["b-1"]=BazarCatalogApi.Models.Book
+catalog_1          | info: System.Net.Http.HttpClient.Default.LogicalHandler[100]
+catalog_1          |       Start processing HTTP request POST http://cache/cache/book/b-1
+catalog_1          | info: System.Net.Http.HttpClient.Default.ClientHandler[100]
+catalog_1          |       Sending HTTP request POST http://cache/cache/book/b-1
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 06:45:02 -- POST /cache/book/b-1 Requested from cache
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 06:45:02 -- setting Cache["b-1"]={"Id":1,"Name":"How to get a good grade in DOS in 40 minutes a day","Topic":"distributed systems","Quantity":200,"Price":60}
+catalog_1          | info: System.Net.Http.HttpClient.Default.ClientHandler[101]
+catalog_1          |       Received HTTP response headers after 22.698ms - 200
+catalog_1          | info: System.Net.Http.HttpClient.Default.LogicalHandler[101]
+catalog_1          |       End processing HTTP request after 22.8648ms - 200
+catalog_1          | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_1          |       08/15/2021 06:45:02 -- Result = {"Id":1,"Name":"How to get a good grade in DOS in 40 minutes a day","Topic":"distributed systems","Quantity":200,"Price":60}
 

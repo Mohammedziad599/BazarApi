@@ -9,48 +9,130 @@ this it's info
     "price": 60.0
 }
 */
-//this is the server log in after sending a purchase request.
-order_1    | info: BazarOrderApi.Controllers.OrderController[0]
-order_1    |       07/18/2021 13:41:27 -- POST /purchase/1 Requested From localhost
-order_1    | info: BazarOrderApi.Controllers.OrderController[0]
-order_1    |       07/18/2021 13:41:27 -- Sending Request to Catalog Server /book/1
-order_1    | info: System.Net.Http.HttpClient.Default.LogicalHandler[100]
-order_1    |       Start processing HTTP request GET http://catalog/book/1
-order_1    | info: System.Net.Http.HttpClient.Default.ClientHandler[100]
-order_1    |       Sending HTTP request GET http://catalog/book/1
-
-catalog_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
-catalog_1  |       07/18/2021 13:41:27 -- GET /book/1 Requested from catalog
-catalog_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
-catalog_1  |       07/18/2021 13:41:27 -- Result = {"Id":1,"Name":"How to get a good grade in DOS in 40 minutes a day","Topic":"distributed systems","Quantity":100,"Price":60}
-
-order_1    | info: System.Net.Http.HttpClient.Default.ClientHandler[101]
-order_1    |       Received HTTP response headers after 213.7352ms - 200
-order_1    | info: System.Net.Http.HttpClient.Default.LogicalHandler[101]
-order_1    |       End processing HTTP request after 232.0928ms - 200
-order_1    | info: BazarOrderApi.Controllers.OrderController[0]
-order_1    |       07/18/2021 13:41:27 -- Catalog Server Returned Status code 200
-order_1    | info: BazarOrderApi.Controllers.OrderController[0]
-order_1    |       07/18/2021 13:41:27 -- Sending Decrement Request to Catalog Server
-order_1    | info: System.Net.Http.HttpClient.Default.LogicalHandler[100]
-order_1    |       Start processing HTTP request POST http://catalog/book/quantity/dec/1
-order_1    | info: System.Net.Http.HttpClient.Default.ClientHandler[100]
-order_1    |       Sending HTTP request POST http://catalog/book/quantity/dec/1
-
-catalog_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
-catalog_1  |       07/18/2021 13:41:27 -- POST /book/quantity/dec/1 From catalog
-catalog_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
-catalog_1  |       07/18/2021 13:41:28 -- Result = {}
-
-order_1    | info: System.Net.Http.HttpClient.Default.ClientHandler[101]
-order_1    |       Received HTTP response headers after 207.2366ms - 204
-order_1    | info: System.Net.Http.HttpClient.Default.LogicalHandler[101]
-order_1    |       End processing HTTP request after 207.3949ms - 204
-order_1    | info: BazarOrderApi.Controllers.OrderController[0]
-order_1    |       07/18/2021 13:41:28 -- Decrement Succeed in the Catalog Server
-order_1    | info: BazarOrderApi.Controllers.OrderController[0]
-order_1    |       07/18/2021 13:41:28 -- Result = {"Id":5,"BookId":1,"Time":"2021-07-18T13:41:28.0081646+00:00"}
-
+//this is the server log in after sending a purchase request.order_1            | info: BazarOrderApi.Controllers.OrderController[0]
+order_1            |       08/15/2021 05:56:25 -- POST /purchase/1 Requested From localhost
+order_1            | info: BazarOrderApi.Controllers.OrderController[0]
+order_1            |       08/15/2021 05:56:25 -- Sending Request to Cache Server /book/1
+order_1            | info: System.Net.Http.HttpClient.Default.LogicalHandler[100]
+order_1            |       Start processing HTTP request GET http://cache/cache/b-1
+order_1            | info: System.Net.Http.HttpClient.Default.ClientHandler[100]
+order_1            |       Sending HTTP request GET http://cache/cache/b-1
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 05:56:25 -- GET /cache/b-1 Requested from cache
+order_1            | info: System.Net.Http.HttpClient.Default.ClientHandler[101]
+order_1            |       Received HTTP response headers after 28.8721ms - 404
+order_1            | info: System.Net.Http.HttpClient.Default.LogicalHandler[101]
+order_1            |       End processing HTTP request after 28.9397ms - 404
+catalog_1          | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_1          |       08/15/2021 05:56:26 -- GET /book/1 Requested from catalog
+catalog_1          | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_1          |       08/15/2021 05:56:26 -- Setting Cache["b-1"]=BazarCatalogApi.Models.Book
+catalog_1          | info: System.Net.Http.HttpClient.Default.LogicalHandler[100]
+catalog_1          |       Start processing HTTP request POST http://cache/cache/book/b-1
+catalog_1          | info: System.Net.Http.HttpClient.Default.ClientHandler[100]
+catalog_1          |       Sending HTTP request POST http://cache/cache/book/b-1
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 05:56:27 -- POST /cache/book/b-1 Requested from cache
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 05:56:27 -- setting Cache["b-1"]={"Id":1,"Name":"How to get a good grade in DOS in 40 minutes a day","Topic":"distributed systems","Quantity":100,"Price":60}
+catalog_1          | info: System.Net.Http.HttpClient.Default.ClientHandler[101]
+catalog_1          |       Received HTTP response headers after 58.8252ms - 200
+catalog_1          | info: System.Net.Http.HttpClient.Default.LogicalHandler[101]
+catalog_1          |       End processing HTTP request after 66.6359ms - 200
+catalog_1          | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_1          |       08/15/2021 05:56:27 -- Result = {"Id":1,"Name":"How to get a good grade in DOS in 40 minutes a day","Topic":"distributed systems","Quantity":100,"Price":60}
+order_1            | info: BazarOrderApi.Controllers.OrderController[0]
+order_1            |       08/15/2021 05:56:27 -- Catalog Server Returned Status code 200
+order_1            | info: BazarOrderApi.Controllers.OrderController[0]
+order_1            |       08/15/2021 05:56:27 -- Sending Decrement Request to Catalog Server
+order_1            | info: System.Net.Http.HttpClient.Default.LogicalHandler[100]
+order_1            |       Start processing HTTP request POST http://catalog/book/quantity/dec/1
+order_1            | info: System.Net.Http.HttpClient.Default.ClientHandler[100]
+order_1            |       Sending HTTP request POST http://catalog/book/quantity/dec/1
+catalog_1          | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_1          |       08/15/2021 05:56:27 -- POST /book/quantity/dec/1 From catalog
+catalog_1          | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_1          |       08/15/2021 05:56:27 -- Sending book decrement to the other replica
+catalog_1          | info: System.Net.Http.HttpClient.Default.LogicalHandler[100]
+catalog_1          |       Start processing HTTP request POST http://catalog_replica/book/dec/1
+catalog_1          | info: System.Net.Http.HttpClient.Default.ClientHandler[100]
+catalog_1          |       Sending HTTP request POST http://catalog_replica/book/dec/1
+catalog_1          | info: System.Net.Http.HttpClient.Default.ClientHandler[101]
+catalog_1          |       Received HTTP response headers after 1274.9891ms - 204
+catalog_1          | info: System.Net.Http.HttpClient.Default.LogicalHandler[101]
+catalog_1          |       End processing HTTP request after 1275.3322ms - 204
+catalog_1          | info: System.Net.Http.HttpClient.Default.LogicalHandler[100]
+catalog_1          |       Start processing HTTP request POST http://cache/cache/invalidateSearches
+catalog_1          | info: System.Net.Http.HttpClient.Default.ClientHandler[100]
+catalog_1          |       Sending HTTP request POST http://cache/cache/invalidateSearches
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 05:56:28 -- POST /cache/invalidateSearches/ Requested from cache
+catalog_1          | info: System.Net.Http.HttpClient.Default.ClientHandler[101]
+catalog_1          |       Received HTTP response headers after 9.2737ms - 200
+catalog_1          | info: System.Net.Http.HttpClient.Default.LogicalHandler[101]
+catalog_1          |       End processing HTTP request after 9.4363ms - 200
+catalog_1          | info: System.Net.Http.HttpClient.Default.LogicalHandler[100]
+catalog_1          |       Start processing HTTP request POST http://cache/cache/invalidate/b-1
+catalog_1          | info: System.Net.Http.HttpClient.Default.ClientHandler[100]
+catalog_1          |       Sending HTTP request POST http://cache/cache/invalidate/b-1
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 05:56:28 -- POST /cache/invalidate/b-1 Requested from cache
+catalog_1          | info: System.Net.Http.HttpClient.Default.ClientHandler[101]
+catalog_1          |       Received HTTP response headers after 3.598ms - 200
+catalog_1          | info: System.Net.Http.HttpClient.Default.LogicalHandler[101]
+catalog_1          |       End processing HTTP request after 3.7024ms - 200
+catalog_1          | info: System.Net.Http.HttpClient.Default.LogicalHandler[100]
+catalog_1          |       Start processing HTTP request POST http://cache/cache/invalidate/books
+catalog_1          | info: System.Net.Http.HttpClient.Default.ClientHandler[100]
+catalog_1          |       Sending HTTP request POST http://cache/cache/invalidate/books
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 05:56:28 -- POST /cache/invalidate/books Requested from cache
+catalog_1          | info: System.Net.Http.HttpClient.Default.ClientHandler[101]
+catalog_1          |       Received HTTP response headers after 0.9032ms - 200
+catalog_1          | info: System.Net.Http.HttpClient.Default.LogicalHandler[101]
+catalog_1          |       End processing HTTP request after 0.9728ms - 200
+catalog_1          | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_1          |       08/15/2021 05:56:28 -- Result = {}
+order_1            | info: System.Net.Http.HttpClient.Default.ClientHandler[101]
+order_1            |       Received HTTP response headers after 1487.2213ms - 204
+order_1            | info: System.Net.Http.HttpClient.Default.LogicalHandler[101]
+order_1            |       End processing HTTP request after 1487.3128ms - 204
+order_1            | info: BazarOrderApi.Controllers.OrderController[0]
+order_1            |       08/15/2021 05:56:28 -- Decrement Succeed in the Catalog Server
+order_1            | info: BazarOrderApi.Controllers.OrderController[0]
+order_1            |       08/15/2021 05:56:28 -- Sending purchase order to the other replica
+order_1            | info: System.Net.Http.HttpClient.Default.LogicalHandler[100]
+order_1            |       Start processing HTTP request POST http://order_replica/purchase/add/1
+order_1            | info: System.Net.Http.HttpClient.Default.ClientHandler[100]
+order_1            |       Sending HTTP request POST http://order_replica/purchase/add/1
+order_replica_1    | info: BazarOrderApi.Controllers.OrderController[0]
+order_replica_1    |       08/15/2021 05:56:28 -- POST /purchase/add/1 Requested from order_replica
+order_1            | info: System.Net.Http.HttpClient.Default.ClientHandler[101]
+order_1            |       Received HTTP response headers after 268.5556ms - 200
+order_1            | info: System.Net.Http.HttpClient.Default.LogicalHandler[101]
+order_1            |       End processing HTTP request after 268.6486ms - 200
+order_1            | info: System.Net.Http.HttpClient.Default.LogicalHandler[100]
+order_1            |       Start processing HTTP request POST http://cache/cache/invalidate/o-4
+order_1            | info: System.Net.Http.HttpClient.Default.ClientHandler[100]
+order_1            |       Sending HTTP request POST http://cache/cache/invalidate/o-4
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 05:56:29 -- POST /cache/invalidate/o-4 Requested from cache
+order_1            | info: System.Net.Http.HttpClient.Default.ClientHandler[101]
+order_1            |       Received HTTP response headers after 4.184ms - 200
+order_1            | info: System.Net.Http.HttpClient.Default.LogicalHandler[101]
+order_1            |       End processing HTTP request after 4.2978ms - 200
+order_1            | info: System.Net.Http.HttpClient.Default.LogicalHandler[100]
+order_1            |       Start processing HTTP request POST http://cache/cache/invalidate/orders
+order_1            | info: System.Net.Http.HttpClient.Default.ClientHandler[100]
+order_1            |       Sending HTTP request POST http://cache/cache/invalidate/orders
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 05:56:29 -- POST /cache/invalidate/orders Requested from cache
+order_1            | info: System.Net.Http.HttpClient.Default.ClientHandler[101]
+order_1            |       Received HTTP response headers after 1.2042ms - 200
+order_1            | info: System.Net.Http.HttpClient.Default.LogicalHandler[101]
+order_1            |       End processing HTTP request after 1.5371ms - 200
+order_1            | info: BazarOrderApi.Controllers.OrderController[0]
+order_1            |       08/15/2021 05:56:29 -- Result = {"Id":4,"BookId":1,"Time":"2021-08-15T05:56:28.7074803+00:00"}
 /*
 {
     "id": 1,

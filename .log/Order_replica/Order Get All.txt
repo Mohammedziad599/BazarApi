@@ -1,0 +1,18 @@
+order_replica_1    | info: BazarOrderApi.Controllers.OrderController[0]
+order_replica_1    |       08/15/2021 05:54:32 -- GET /purchase/list Requested from localhost
+order_replica_1    | info: BazarOrderApi.Controllers.OrderController[0]
+order_replica_1    |       08/15/2021 05:54:33 -- Setting Cache["orders"]=BazarOrderApi.Models.Order[]
+order_replica_1    | info: System.Net.Http.HttpClient.Default.LogicalHandler[100]
+order_replica_1    |       Start processing HTTP request POST http://cache/cache/order/array/orders
+order_replica_1    | info: System.Net.Http.HttpClient.Default.ClientHandler[100]
+order_replica_1    |       Sending HTTP request POST http://cache/cache/order/array/orders
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 05:54:33 -- POST /cache/order/array/orders Requested from cache
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 05:54:33 -- setting Cache["orders"] = [{"Id":1,"BookId":2,"Time":"2021-07-08T01:10:08.1468068"},{"Id":2,"BookId":2,"Time":"2021-07-08T01:10:26.0740454"},{"Id":3,"BookId":1,"Time":"2021-07-08T11:38:40.2611329"}]
+order_replica_1    | info: System.Net.Http.HttpClient.Default.ClientHandler[101]
+order_replica_1    |       Received HTTP response headers after 50.267ms - 200
+order_replica_1    | info: System.Net.Http.HttpClient.Default.LogicalHandler[101]
+order_replica_1    |       End processing HTTP request after 58.761ms - 200
+order_replica_1    | info: BazarOrderApi.Controllers.OrderController[0]
+order_replica_1    |       08/15/2021 05:54:33 -- Result = [{"Id":1,"BookId":2,"Time":"2021-07-08T01:10:08.1468068"},{"Id":2,"BookId":2,"Time":"2021-07-08T01:10:26.0740454"},{"Id":3,"BookId":1,"Time":"2021-07-08T11:38:40.2611329"}]

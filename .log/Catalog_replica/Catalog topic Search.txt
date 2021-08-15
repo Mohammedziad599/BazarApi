@@ -1,0 +1,18 @@
+catalog_replica_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_replica_1  |       08/15/2021 06:53:40 -- GET /book/topic/search/dist From localhost
+catalog_replica_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_replica_1  |       08/15/2021 06:53:40 -- Setting Cache["s-topic-dist"]=BazarCatalogApi.Models.Book[]
+catalog_replica_1  | info: System.Net.Http.HttpClient.Default.LogicalHandler[100]
+catalog_replica_1  |       Start processing HTTP request POST http://cache/cache/book/array/s-topic-dist
+catalog_replica_1  | info: System.Net.Http.HttpClient.Default.ClientHandler[100]
+catalog_replica_1  |       Sending HTTP request POST http://cache/cache/book/array/s-topic-dist
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 06:53:40 -- POST /cache/book/array/s-topic-dist Requested from cache
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 06:53:40 -- setting Cache["s-topic-dist"] = [{"Id":1,"Name":"How to get a good grade in DOS in 40 minutes a day","Topic":"distributed systems","Quantity":200,"Price":60},{"Id":2,"Name":"RPCs for Noobs","Topic":"distributed systems","Quantity":200,"Price":40},{"Id":5,"Name":"How to finish Project 3 on time","Topic":"distribured systems","Quantity":20,"Price":30}]
+catalog_replica_1  | info: System.Net.Http.HttpClient.Default.ClientHandler[101]
+catalog_replica_1  |       Received HTTP response headers after 1.9279ms - 200
+catalog_replica_1  | info: System.Net.Http.HttpClient.Default.LogicalHandler[101]
+catalog_replica_1  |       End processing HTTP request after 1.9876ms - 200
+catalog_replica_1  | info: BazarCatalogApi.Controllers.CatalogController[0]
+catalog_replica_1  |       08/15/2021 06:53:40 -- Result = [{"Id":1,"Name":"How to get a good grade in DOS in 40 minutes a day","Topic":"distributed systems","Quantity":200,"Price":60},{"Id":2,"Name":"RPCs for Noobs","Topic":"distributed systems","Quantity":200,"Price":40},{"Id":5,"Name":"How to finish Project 3 on time","Topic":"distribured systems","Quantity":20,"Price":30}]

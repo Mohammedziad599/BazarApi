@@ -1,0 +1,5 @@
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 06:59:41 -- GET /cache/books Requested from localhost
+cache_1            | info: BazarCacheApi.Controllers.CacheController[0]
+cache_1            |       08/15/2021 06:59:41 -- Adding 1 minutes for Cache["books"]
+
