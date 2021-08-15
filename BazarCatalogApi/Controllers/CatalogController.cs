@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Text.Json;
+using System.Text;
 using System.Threading.Tasks;
 
 using AutoMapper;
@@ -17,6 +17,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+
+using Newtonsoft.Json;
+
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace BazarCatalogApi.Controllers
 {
@@ -291,8 +295,9 @@ namespace BazarCatalogApi.Controllers
             var client = _clientFactory.CreateClient();
             _logger.LogInformation($"{DateTime.Now} -- Sending book update to the other replica");
             await client.PatchAsync(
-                $"http://{(InDocker ? _hostName == "catalog" ? "catalog_replica" : "catalog" : _hostName == "catalog" ? "192.168.50.200" : "192.18.50.100")}/book/update/{id}",
-                new StringContent(JsonSerializer.Serialize(patchDocument)));
+                $"http://{(InDocker ? _hostName == "catalog" ? "catalog_replica" : "catalog" : _hostName == "catalog" ? "192.168.50.200" : "192.18.50.100")}/book/update/patch/{id}",
+                new StringContent(JsonConvert.SerializeObject(patchDocument), Encoding.UTF8,
+                    "application/json-patch+json"));
 
             await client.PostAsync($"http://{(InDocker ? "cache" : "192.168.50.102")}/cache/invalidateSearches",
                 new StringContent(""));
